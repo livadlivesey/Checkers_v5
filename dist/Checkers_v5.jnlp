@@ -8,7 +8,7 @@
   </information>
   <resources>
     <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
-    <jar href="Checkers_v5.jar" size="25938" download="eager" />
+    <jar href="Checkers_v5.jar" size="26019" download="eager" />
   </resources>
   <jfx:javafx-desc  width="800" height="600" main-class="checkers_v5.Checkers_v5"  name="Checkers_v5" />
   <update check="always"/>

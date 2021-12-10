@@ -551,6 +551,7 @@ public class Checkers_controller implements Initializable {
                     tiles[tile.getPosition() - 1].setEffect(null);
                 }
                 model.move(c, t, model.gameState);
+                System.out.println(selectedTile.isManaged());
 
                 if (model.isGameOver(model.gameState)) {
                     Alert alert = new Alert(AlertType.WARNING, " ", ButtonType.OK);
@@ -615,10 +616,11 @@ public class Checkers_controller implements Initializable {
         int checkPos = bestMove.getOriginalPos();
         selectedChecker = circles[checkPos - 1];
         selectedTile = tiles[tilePos - 1];
+        selectedTile.setManaged(false);
         System.out.println(selectedChecker);
         System.out.println(selectedTile);
         
-        System.out.println(selectedChecker.layoutBoundsProperty());
+        System.out.println(selectedChecker.depthTestProperty());
         Point2D newPos = calc_position(selectedChecker, selectedTile);
         Double newX = newPos.getX() + selectedChecker.getCenterX();
         Double newY = newPos.getY() + selectedChecker.getCenterY();
@@ -628,11 +630,13 @@ public class Checkers_controller implements Initializable {
         
 
         System.out.println(selectedChecker.getScene());
+        System.out.println(selectedTile.isManaged());
         //System.out.println(selectedChecker.get);
         circles[bestMove.getTile().getPosition() - 1] = selectedChecker;
         tiles[bestMove.getTile().getPosition() -1 ] = selectedTile;
 
         model.move(bestMove.getChecker(), bestMove.getTile(), model.gameState);
+        
         
         
         
