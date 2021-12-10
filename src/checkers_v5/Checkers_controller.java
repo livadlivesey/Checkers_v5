@@ -613,15 +613,11 @@ public class Checkers_controller implements Initializable {
 
         int tilePos = bestMove.getNewPos();
         int checkPos = bestMove.getOriginalPos();
-        //System.out.println(" /n Circles: " + Arrays.toString(circles));
-        //System.out.println(" /n GameState: " + Arrays.toString(model.gameState));
-        //System.out.println(" /n Tiles: " + Arrays.toString(tiles));
         selectedChecker = circles[checkPos - 1];
-        //selectedChecker = convertChecker(bestMove.getChecker());
         selectedTile = tiles[tilePos - 1];
         System.out.println(selectedChecker);
         System.out.println(selectedTile);
-        System.out.println(selectedChecker.getScene());
+        
         System.out.println(selectedChecker.layoutBoundsProperty());
         Point2D newPos = calc_position(selectedChecker, selectedTile);
         Double newX = newPos.getX() + selectedChecker.getCenterX();
@@ -630,7 +626,7 @@ public class Checkers_controller implements Initializable {
         this.move_position(selectedChecker, newX, newY);
 
         
-        //selectedChecker.setVisible(true);
+
         System.out.println(selectedChecker.getScene());
         //System.out.println(selectedChecker.get);
         circles[bestMove.getTile().getPosition() - 1] = selectedChecker;
@@ -639,7 +635,7 @@ public class Checkers_controller implements Initializable {
         model.move(bestMove.getChecker(), bestMove.getTile(), model.gameState);
         
         
-
+        
         //tileState.replace(selectedTile, convertRectangle(selectedTile));
         //checkerState.replace(selectedChecker, convertCircle(selectedChecker));
         
@@ -752,12 +748,8 @@ public class Checkers_controller implements Initializable {
         translate.setX(newX - inScene.getX());
         translate.setY(newY - inScene.getY());
         checker.getTransforms().addAll(translate);
-        //checker.setTranslateX(newX - inScene.getX());
-        //checker.setTranslateY(newY - inScene.getY());
 
         checker.setOpacity(1.0);
-        //checker.toFront();
-
         //Updating the available positions based on the move
     }
 
