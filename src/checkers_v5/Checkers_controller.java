@@ -616,7 +616,7 @@ public class Checkers_controller implements Initializable {
         int checkPos = bestMove.getOriginalPos();
         selectedChecker = circles[checkPos - 1];
         selectedTile = tiles[tilePos - 1];
-        selectedTile.setManaged(false);
+        //selectedTile.setManaged(false);
         System.out.println(selectedChecker);
         System.out.println(selectedTile);
         
