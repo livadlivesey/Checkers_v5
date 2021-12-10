@@ -526,7 +526,6 @@ public class Checkers_controller implements Initializable {
     @FXML
     private void moveCurrentChecker(MouseEvent event) {
         selectedTile = (Rectangle) event.getTarget();
-        
         if (selectedChecker != null && model.getCurrentPlayer().equals("User")) {
             Checker c = convertCircle(selectedChecker);
             Tile t = convertRectangle(selectedTile);
@@ -537,20 +536,20 @@ public class Checkers_controller implements Initializable {
             //System.out.println("GetAllLegalMoves: " + available);
             if (legalMoves.contains(t)) {
                 //Calculating the position of the tile and current checker in the same parent node
+                System.out.println(selectedChecker.getScene());
+                System.out.println(selectedChecker.layoutBoundsProperty());
                 Point2D newPos = calc_position(selectedChecker, selectedTile);
                 Double newX = newPos.getX() + selectedChecker.getCenterX();
                 Double newY = newPos.getY() + selectedChecker.getCenterY();
                 int originalPos = c.position;
-
+                
                 move_position(selectedChecker, newX, newY);
+                System.out.println(selectedChecker.getScene());
+                System.out.println(selectedChecker.layoutBoundsProperty());
 
                 for (Tile tile : legalMoves) {
                     tiles[tile.getPosition() - 1].setEffect(null);
                 }
-                //Updating the model
-//                tileState.keySet().forEach(r -> {
-//                    r.setFill(Color.BLACK);
-//                });
                 model.move(c, t, model.gameState);
 
                 if (model.isGameOver(model.gameState)) {
@@ -622,15 +621,24 @@ public class Checkers_controller implements Initializable {
         selectedTile = tiles[tilePos - 1];
         System.out.println(selectedChecker);
         System.out.println(selectedTile);
+        System.out.println(selectedChecker.getScene());
+        System.out.println(selectedChecker.layoutBoundsProperty());
         Point2D newPos = calc_position(selectedChecker, selectedTile);
         Double newX = newPos.getX() + selectedChecker.getCenterX();
         Double newY = newPos.getY() + selectedChecker.getCenterY();
-
+            
         this.move_position(selectedChecker, newX, newY);
-        selectedChecker.setVisible(true);
+
+        
+        //selectedChecker.setVisible(true);
+        System.out.println(selectedChecker.getScene());
+        //System.out.println(selectedChecker.get);
+        circles[bestMove.getTile().getPosition() - 1] = selectedChecker;
+        tiles[bestMove.getTile().getPosition() -1 ] = selectedTile;
 
         model.move(bestMove.getChecker(), bestMove.getTile(), model.gameState);
-        circles[bestMove.getTile().getPosition() - 1] = selectedChecker;
+        
+        
 
         //tileState.replace(selectedTile, convertRectangle(selectedTile));
         //checkerState.replace(selectedChecker, convertCircle(selectedChecker));
