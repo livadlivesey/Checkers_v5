@@ -52,6 +52,7 @@ public class Checkers_v5 extends Application {
         //Bindings.bindBidirectional(userCheckers, userController.user_checkers);
         
         Scene scene = new Scene(root);
+        //scene.addEventFilter(MouseEvent.ANY, e -> System.out.println( e));
         stage.setTitle("Checkers");
         
         stage.setScene(scene);

@@ -106,7 +106,7 @@
                         <Pane fx:id="row3" layoutY="400.0">
                             <children>
                                 <Rectangle fx:id="sq0_3" arcHeight="5.0"  arcWidth="5.0" fill="RED" height="100.0" stroke="BLACK" strokeType="INSIDE" styleClass="board_square" width="100.0" />
-                                <Rectangle fx:id="pos17" arcHeight="5.0" onMouseEntered="#selectNewTile"  onMouseClicked="#moveCurrentChecker" onMouseExited="#removeTileSelection"   arcWidth="5.0" height="100.0" layoutX="100.0" stroke="BLACK" strokeType="INSIDE" styleClass="board_square_lt" width="100.0" />
+                                <Rectangle fx:id="pos17" arcHeight="5.0"  onMouseEntered="#selectNewTile"  onMouseClicked="#moveCurrentChecker" onMouseExited="#removeTileSelection"   arcWidth="5.0" height="100.0" layoutX="100.0" stroke="BLACK" strokeType="INSIDE" styleClass="board_square_lt" width="100.0" />
                                 <Rectangle fx:id="sq2_3" arcHeight="5.0" arcWidth="5.0" fill="RED" height="100.0" layoutX="200.0" stroke="BLACK" strokeType="INSIDE" styleClass="board_square" width="100.0" />
                                 <Rectangle fx:id="pos18" onMouseEntered="#selectNewTile"  onMouseClicked="#moveCurrentChecker" onMouseExited="#removeTileSelection"  arcHeight="5.0" arcWidth="5.0" height="100.0" layoutX="300.0" stroke="BLACK" strokeType="INSIDE" styleClass="board_square_lt" width="100.0" />
                                 <Rectangle fx:id="sq4_3" arcHeight="5.0" arcWidth="5.0" fill="RED" height="100.0" layoutX="400.0" stroke="BLACK" strokeType="INSIDE" styleClass="board_square" width="100.0" />
