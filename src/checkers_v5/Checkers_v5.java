@@ -19,6 +19,8 @@ import javafx.stage.Stage;
 import checkers_v5.Checkers_controller;
 import javafx.scene.layout.AnchorPane;
 
+import static java.lang.System.*;
+
 /**
  *
  * @author liv
@@ -43,7 +45,7 @@ public class Checkers_v5 extends Application {
         
         userController = loader.getController();
         Parent root = loader.load();
-        
+
         
         
           

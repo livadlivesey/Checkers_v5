@@ -30,6 +30,9 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.transform.Translate;
 
+import static java.lang.System.getProperty;
+import static java.lang.System.out;
+
 /**
  *
  * @author liv
@@ -409,14 +412,6 @@ public class Checkers_controller implements Initializable {
         highlightedChecker = null;
         highlightedTile = null;
 
-        for (int i = 0; i < rectangleGroup.getChildren().size(); i++) {
-            Node p = rectangleGroup.getChildren().get(i);
-
-            System.out.print("Node: " + p);
-            System.out.print(" /n Node class: " + p.getClass());
-            System.out.print(" /n Node.toString(): " + p.toString());
-
-        }
     }
 
     @FXML
