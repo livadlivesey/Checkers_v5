@@ -351,17 +351,20 @@ public class Game {
             return calc_heuristic(state); // return static evaluation of node
 
         }
-        if (currentPlayer.equals("User")) {
+        //store all moves onto state
+        
+        if (currentPlayer.equals("User")) { // User is minimizing player
             List<Move> userMoves;
             userMoves = getUserMoves(legalMoves); // Generate available moves for player
             for (Move move : userMoves) {
                 Tile[] tempState = cloneState(state);
-
                 deCount++;
-
+                Checker moving = tempState[move.checker.getPosition()-1].getChecker();
+                Tile newTile = tempState[move.newTile.getPosition()-1];
                 int originalPos = move.checker.getPosition(); // Get position of checker before move for undo move later
                 Tile originalTile = tempState[originalPos - 1];
-                move(move.checker, move.newTile, state); //place piece at first available position
+                //move(move.checker, move.newTile, tempState); //place piece at first available position
+                move(moving, newTile, tempState);
                 int score = minimaxAB(depth - 1, "Computer", alpha, beta, tempState); // start recursion
                 
                 min_value = Math.min(min_value, score);
@@ -374,17 +377,6 @@ public class Game {
                     break;
                     
                 }
-                //alpha= Math.max(alpha, max_value);
-                //beta = Math.min(beta, min_value);
-
-                //Un do the move that happened
-                int testPos = move.newTile.getPosition();
-                tempState[testPos - 1].removeChecker();
-                tempState[originalPos - 1].setChecker(move.checker);
-                move(move.checker, originalTile, tempState);
-                //Any other states which need to be updated?
-
-
             }
             this.bestMove = tempBestMove;
             return min_value;
@@ -404,16 +396,6 @@ public class Game {
                     tempBestMove = move;
                     alpha= Math.max(alpha, max_value);
                 }
-
-                //Un do the move that happened
-                int testPos = move.newTile.getPosition();
-                tempState[testPos - 1].removeChecker();
-                tempState[originalPos - 1].setChecker(move.checker);
-                move.checker.position = originalPos;
-                move(move.checker, originalTile, tempState);
-
-                //alpha= Math.max(alpha, max_value);
-                //beta = Math.min(beta, min_value);
                 if (beta <= alpha) {
                     pCount++;
                     break;
@@ -481,7 +463,7 @@ public class Game {
                 }
             }
         }
-        return human_score - ai_score;
+        return ai_score - human_score;
     }
 
     public void setDifficulty(int difficulty) {

@@ -8,7 +8,7 @@
   </information>
   <resources>
     <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
-    <jar href="Checkers_v5.jar" size="26267" download="eager" />
+    <jar href="Checkers_v5.jar" size="26792" download="eager" />
     <jar href="lib/javafx-swt.jar" size="37117" download="eager" />
     <jar href="lib/javafx.base.jar" size="745857" download="eager" />
     <jar href="lib/javafx.controls.jar" size="2545274" download="eager" />

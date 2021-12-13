@@ -527,6 +527,7 @@ public class Checkers_controller implements Initializable {
                     int originalPos = c.position;
 
                     move_position(selectedChecker, newX, newY);
+                    
 
                     for (Tile tile : legalMoves) {
                         tiles[tile.getPosition() - 1].setEffect(null);
@@ -595,17 +596,26 @@ public class Checkers_controller implements Initializable {
 
         int tilePos = bestMove.getNewPos();
         int checkPos = bestMove.getOriginalPos();
-        selectedChecker = circles[checkPos - 1];
-        selectedTile = tiles[tilePos - 1];
+        
+        Checker c = gameState[checkPos-1].getChecker();
+        Tile t = gameState[tilePos-1];
+        
+        //selectedChecker = circles[checkPos - 1];
+        //selectedTile = tiles[tilePos - 1];
+        selectedChecker = convertChecker(c);
+        selectedTile = convertTile(t);
+        
         System.out.println(selectedChecker);
         System.out.println(selectedTile);
 
         Point2D newPos = calc_position(selectedChecker, selectedTile);
         Double newX = newPos.getX() + selectedChecker.getCenterX();
         Double newY = newPos.getY() + selectedChecker.getCenterY();
+        System.out.println("CALC_POSITION NEW:" +newX+" ,"+newY);
 
-        this.move_position(selectedChecker, newX, newY);
+        move_position(selectedChecker, newX, newY);
 
+        
         circles[bestMove.getTile().getPosition() - 1] = selectedChecker;
         tiles[bestMove.getTile().getPosition() - 1] = selectedTile;
 
@@ -706,6 +716,7 @@ public class Checkers_controller implements Initializable {
         Translate translate = new Translate();
         translate.setX(newX - inScene.getX());
         translate.setY(newY - inScene.getY());
+        System.out.println("TRANSLATE NEW: "+translate.getX()+", "+translate.getY());
         checker.getTransforms().addAll(translate);
         //checker.setFill((Color.YELLOW));
         
