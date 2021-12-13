@@ -338,26 +338,26 @@ public class Game {
      * @return
      */
     public int minimaxAB(int depth, String currentPlayer, int alpha, int beta, Tile[] state) {
-        Move tempBestMove = null;
-        int bestScore;
-        if (currentPlayer.equals("User")) {
-            bestScore = Integer.MAX_VALUE;
-        } else {
-            bestScore = Integer.MIN_VALUE;
-        }
-
-
-
         List<Move> legalMoves = getAllLegalMoves(state);
         if (depth == 0 || legalMoves.isEmpty()) {
             seCount++;
             //successorEvaluations.add(new MovesAndScores(bestScore, tempBestMove));
             return calc_heuristic(state); // return static evaluation of node
 
-        }
+        }        
+
+        Move tempBestMove = null;
+//        int bestScore;
+//        if (currentPlayer.equals("User")) {
+//            bestScore = Integer.MAX_VALUE;
+//        } else {
+//            bestScore = Integer.MIN_VALUE;
+//        }
+
+
         if (currentPlayer.equals("User")) {
             //int maxScore = Integer.MIN_VALUE;      // User is minimizing player   
-            //bestScore = Integer.MIN_VALUE;
+            bestScore = Integer.MAX_VALUE;
             List<Move> userMoves;
             userMoves = getUserMoves(legalMoves); // Generate available moves for player
             for (Move move : userMoves) {
@@ -369,10 +369,10 @@ public class Game {
                 move(move.checker, move.newTile, state); //place piece at first available position
                 int score = minimaxAB(depth - 1, "Computer", alpha, beta, state); // start recursion
 
-                bestScore = Math.max(bestScore, score); //get best score
+                bestScore = Math.min(bestScore, score); //get best score
 
                 //alpha = Math.max(alpha, bestScore);
-                if (alpha <= bestScore) {
+                if (alpha < bestScore) {
                     alpha = bestScore;
                     tempBestMove = new Move(move.checker, move.newTile); // save the best move temporarily
                 }
@@ -393,10 +393,10 @@ public class Game {
                 }
 
             }
-            //this.bestMove = tempBestMove;
-            //return bestScore;
+            this.bestMove = tempBestMove;
+            return bestScore;
         } else {
-            int minScore = Integer.MAX_VALUE; //Computer is maximizing player
+            int bestScore = Integer.MIN_VALUE; //Computer is maximizing player
             List<Move> compMoves = getCompMoves(legalMoves);
             for (Move move : compMoves) {
                 //state = cloneState(gameState);
@@ -404,10 +404,12 @@ public class Game {
                 int originalPos = move.checker.getPosition(); //Store original position for later undoing the move
                 move(move.checker, move.newTile, state);
                 int score = minimaxAB(depth - 1, "User", alpha, beta, state);
-                minScore = Math.min(score, minScore);
+
+                bestScore = Math.max(score, bestScore);
 
                 //beta = Math.min(score, beta);
-                if (bestScore <= beta) {
+                if (bestScore > beta) {
+                    
                     beta = bestScore;
                     tempBestMove = move;
                 }
@@ -423,13 +425,15 @@ public class Game {
                 if (beta <= alpha) {
                     pCount++;
                     break;
+
                 }
             }
-            //this.bestMove = tempBestMove;
-            //return bestScore;
+
+            this.bestMove = tempBestMove;
+            return bestScore;
         }
-        this.bestMove = tempBestMove;
-        return bestScore;
+        //this.bestMove = tempBestMove;
+        //return bestScore;
     }
 
     public Move getBestMove2() {
