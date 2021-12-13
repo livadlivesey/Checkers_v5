@@ -605,6 +605,8 @@ public class Checkers_controller implements Initializable {
         selectedChecker = convertChecker(c);
         selectedTile = convertTile(t);
         
+        
+
         System.out.println(selectedChecker);
         System.out.println(selectedTile);
 
@@ -615,7 +617,7 @@ public class Checkers_controller implements Initializable {
 
         move_position(selectedChecker, newX, newY);
 
-        
+        //selectedTile.setOpacity(0.0);
         circles[bestMove.getTile().getPosition() - 1] = selectedChecker;
         tiles[bestMove.getTile().getPosition() - 1] = selectedTile;
 
@@ -718,12 +720,11 @@ public class Checkers_controller implements Initializable {
         translate.setY(newY - inScene.getY());
         System.out.println("TRANSLATE NEW: "+translate.getX()+", "+translate.getY());
         checker.getTransforms().addAll(translate);
-        //checker.setFill((Color.YELLOW));
         
-        System.out.println(checker.getTransforms());
         
-        //checker.relocate(newX - inScene.getX(), newY-inScene.getY());
 
+        //System.out.println(checker.getTransforms());
+        
         checker.setOpacity(1.0);
         //Updating the available positions based on the move
     }
