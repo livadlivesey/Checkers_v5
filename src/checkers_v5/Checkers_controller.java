@@ -673,14 +673,14 @@ public class Checkers_controller implements Initializable {
         double minX = newPosition.boundsInLocalProperty().get().getMinX();
 
         double minY = newPosition.boundsInLocalProperty().get().getMinY();
-        System.out.println("BOUNDS IN PARENT: ( " + minX + ", " + minY + " )");
+        //System.out.println("BOUNDS IN PARENT: ( " + minX + ", " + minY + " )");
         Point2D boundsInScene = currentChecker.localToScene(minX, minY);
-        System.out.println("BOUNDS IN Scene: ( " + boundsInScene.getX() + ", " + boundsInScene.getY() + " )");
+        //System.out.println("BOUNDS IN Scene: ( " + boundsInScene.getX() + ", " + boundsInScene.getY() + " )");
         //Gets the X and Y co ordinates of the new tiles position
         double newX = inParent.getX();
         double newY = inParent.getY();
 
-        System.out.println("CURRENT CALC: ( " + newX + ", " + newY + " )");
+        //System.out.println("CURRENT CALC: ( " + newX + ", " + newY + " )");
 
         //Creates a 2D point with the X and Y co ordinates
         Point2D finalPos = new Point2D(newX, newY);
@@ -701,12 +701,17 @@ public class Checkers_controller implements Initializable {
         // Use translate to preserve the current scale, translate etc properties
         Point2D inScene = checker.localToParent(checker.getLayoutBounds().getMinX(), checker.getLayoutBounds().getMinY());
         //Point2D inScene = new Point2D(checker.getBoundsInParent().getMinX(), checker.getBoundsInParent().getMinY());
-        //vbox.getChildren().add( new Rectangle(inScene.getX(), inScene.getY(), Color.ALICEBLUE));
+        ///rectangleGroup.getChildren().add( new Rectangle(newX - inScene.getX(), newY - inScene.getY(), Color.ALICEBLUE));
 
         Translate translate = new Translate();
         translate.setX(newX - inScene.getX());
         translate.setY(newY - inScene.getY());
         checker.getTransforms().addAll(translate);
+        //checker.setFill((Color.YELLOW));
+        
+        System.out.println(checker.getTransforms());
+        
+        //checker.relocate(newX - inScene.getX(), newY-inScene.getY());
 
         checker.setOpacity(1.0);
         //Updating the available positions based on the move
