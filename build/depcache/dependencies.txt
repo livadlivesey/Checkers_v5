@@ -29,6 +29,7 @@ java.util.ArrayList
 javafx.scene.Parent
 javafx.fxml.FXMLLoader
 javafx.geometry.Point2D
+javafx.scene.transform.Transform
 javafx.scene.shape.Circle
 java.util.Hashtable
 javafx.scene.layout.Pane
