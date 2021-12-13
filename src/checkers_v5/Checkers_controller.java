@@ -436,7 +436,7 @@ public class Checkers_controller implements Initializable {
     @FXML
     public void selectChecker(MouseEvent event) {
         if (ongoingMove && event.getSource() instanceof Circle) {
-            for (Tile tile : model.getLegalMoves(convertCircle(selectedChecker))) {
+            for (Tile tile : model.getLegalMoves(convertCircle(selectedChecker))) {//covert circle 1 if in legal moves? @eliseo
                 tiles[tile.getPosition() - 1].setEffect(null);
             }
             //If a checker has already been selected, but the user has now selected a different one, change selection
@@ -449,7 +449,7 @@ public class Checkers_controller implements Initializable {
         } else if (event.getSource() instanceof Circle) {
             // Select the checker and change opacity 
             selectedChecker = (Circle) event.getSource();
-            selectedChecker.setOpacity(0.5d);
+            selectedChecker.setOpacity(0.5d);                                                                //setting opacity 1 @eliseo
 
             //Get the tile that the checker is on
             currentTile = getCurrentTile(event);
@@ -459,9 +459,9 @@ public class Checkers_controller implements Initializable {
             DropShadow outerShadow = new DropShadow();
             outerShadow.setColor(Color.YELLOW);
             outerShadow.setWidth(20);
-            List<Tile> legalMoves = model.getLegalMoves(convertCircle(selectedChecker));
+            List<Tile> legalMoves = model.getLegalMoves(convertCircle(selectedChecker));                     //convert circle 1 if in legal moves? @eliseo
             for (Tile tile : legalMoves) {
-                tiles[tile.getPosition() - 1].setEffect(outerShadow);
+                tiles[tile.getPosition() - 1].setEffect(outerShadow);                                        //outer shadow 1 @eliseo
             }
             //Assign that there is an ongoing move
             ongoingMove = true;
@@ -479,14 +479,14 @@ public class Checkers_controller implements Initializable {
             DropShadow outerShadow = new DropShadow();
             outerShadow.setColor(Color.PINK);
             outerShadow.setWidth(10);
-            highlightedChecker.setEffect(outerShadow);
+            highlightedChecker.setEffect(outerShadow);                                                 //outer shafow on highlited @eliseo
         }
     }
 
     @FXML
     private void deHighlightSelected(MouseEvent event) {
         if (event.getSource().equals(highlightedChecker)) {
-            highlightedChecker.setEffect(null);
+            highlightedChecker.setEffect(null);                                                        //setting effect to null 1
             highlightedChecker = null;
         }
     }
@@ -502,37 +502,37 @@ public class Checkers_controller implements Initializable {
     @FXML
     private void removeTileSelection(MouseEvent event) {
         if (highlightedTile != null && event.getSource() instanceof Rectangle) {
-            highlightedTile.setOpacity(1.0);
+            highlightedTile.setOpacity(1.0);                                                      //set opacity 2 @eliseo
             highlightedTile = null;
         }
     }
 
     @FXML
     private void moveCurrentChecker(MouseEvent event) {
-        if (event.getSource() instanceof Rectangle) {
-            selectedTile = (Rectangle) event.getTarget();
+        if (event.getSource() instanceof Rectangle) {                                                   //can you not keep the events on the circle? @eliseo
+            selectedTile = (Rectangle) event.getTarget();                                                //are taking the right event here? @eliseo
             if (ongoingMove) { //selectedChecker != null && model.getCurrentPlayer().equals("User")
                 Checker c = convertCircle(selectedChecker);
                 Tile t = convertRectangle(selectedTile);
                 //Move m = new Move(c, t);
                 //System.out.println("New Move: " + m);
                 //List<Move> available = model.getAllLegalMoves(model.gameState);
-                List<Tile> legalMoves = model.getLegalMoves(convertCircle(selectedChecker));
+                List<Tile> legalMoves = model.getLegalMoves(convertCircle(selectedChecker));                     //shouldn't you convert c? in what event is the selected checker becomes selected? 
                 //System.out.println("GetAllLegalMoves: " + available);
-                if (legalMoves.contains(t)) {
+                if (legalMoves.contains(t)) {                                                                   //shouldn't you check for the circle in the legalMoves? or does the converted rectangle gives a position that is the same as circle?
                     //Calculating the position of the tile and current checker in the same parent node
                     Point2D newPos = calc_position(selectedChecker, selectedTile);
-                    Double newX = newPos.getX() + selectedChecker.getCenterX();
+                    Double newX = newPos.getX() + selectedChecker.getCenterX();                            
                     Double newY = newPos.getY() + selectedChecker.getCenterY();
-                    int originalPos = c.position;
+                    int originalPos = c.position;                                                                   //just to be sure print those positions to see where the error is
 
                     move_position(selectedChecker, newX, newY);
                     
 
                     for (Tile tile : legalMoves) {
-                        tiles[tile.getPosition() - 1].setEffect(null);
+                        tiles[tile.getPosition() - 1].setEffect(null);                                           //set effect 2 to null
                     }
-                    model.move(c, t, model.gameState);
+                    model.move(c, t, model.gameState);                                                           //shouldn't you update the states with the new position before to move?
 
                     if (model.isGameOver(model.gameState)) {
                         Alert alert = new Alert(AlertType.WARNING, " ", ButtonType.OK);
@@ -545,7 +545,7 @@ public class Checkers_controller implements Initializable {
                     //checkerState.replace(selectedChecker, c);
                     //circles[t.getPosition() - 1] = selectedChecker;
 
-                    updateStates();
+                    updateStates();                                                                                     //
 
                     if (model.isCapturingMove(c, t)) {
                         System.out.println("Capturing: " + c.toString());
@@ -556,11 +556,11 @@ public class Checkers_controller implements Initializable {
                                 row.getChildren().remove(capturedChecker);
                             }
                         }
-                        model.removeChecker(c);
+                        model.removeChecker(c);                                                 
                     }
                     model.currentPlayer = "Computer";
                     System.out.println("\n I'm thinking...");
-                    moveCompChecker();
+                    moveCompChecker();                                                 
 
                 } else {
                     Alert alert = new Alert(AlertType.WARNING, " ", ButtonType.OK);
@@ -767,7 +767,7 @@ public class Checkers_controller implements Initializable {
 
     public Checker convertCircle(Circle c) {
 
-        Checker checker = checkerState.get(c);
+        Checker checker = checkerState.get(c);                                            //also be careful at checker states
 
         return checker;
     }
