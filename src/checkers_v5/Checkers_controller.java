@@ -286,6 +286,7 @@ public class Checkers_controller implements Initializable {
     Tile[] gameState;
     private Circle highlightedChecker;
     int level;
+    Move bestMove;
 
     Timer timer;
 
@@ -408,15 +409,8 @@ public class Checkers_controller implements Initializable {
         selectedTile = null;
         highlightedChecker = null;
         highlightedTile = null;
+        bestMove = null;
 
-        for (int i = 0; i < rectangleGroup.getChildren().size(); i++) {
-            Node p = rectangleGroup.getChildren().get(i);
-
-            System.out.print("Node: " + p);
-            System.out.print(" /n Node class: " + p.getClass());
-            System.out.print(" /n Node.toString(): " + p.toString());
-            System.out.print(" /n Node.getScene()" + p.getParent());
-        }
     }
 
     @FXML
@@ -583,7 +577,7 @@ public class Checkers_controller implements Initializable {
             ongoingMove = false;
             updateStates();
         }
-        event.consume();
+        //event.consume();
     }
 
     private void moveCompChecker() {
@@ -592,7 +586,7 @@ public class Checkers_controller implements Initializable {
         System.out.println("\n SE: " + model.seCount + " DE: " + model.deCount + " P: " + model.pCount);
         System.out.print("Model.bestMove: " + model.bestMove);
 
-        Move bestMove = model.getBestMove2();
+        bestMove = model.getBestMove2();
 
         int tilePos = bestMove.getNewPos();
         int checkPos = bestMove.getOriginalPos();
@@ -600,10 +594,10 @@ public class Checkers_controller implements Initializable {
         Checker c = gameState[checkPos-1].getChecker();
         Tile t = gameState[tilePos-1];
         
-        //selectedChecker = circles[checkPos - 1];
-        //selectedTile = tiles[tilePos - 1];
-        selectedChecker = convertChecker(c);
-        selectedTile = convertTile(t);
+        selectedChecker = circles[checkPos - 1];
+        selectedTile = tiles[tilePos - 1];
+        //selectedChecker = convertChecker(c);
+        //selectedTile = convertTile(t);
         
         
 

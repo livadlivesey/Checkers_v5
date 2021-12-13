@@ -44,21 +44,21 @@ public class Tile {
 
     public void calculate_row() {
         if (1 <= this.position && this.position <= 4) {
-            this.row = 8;
-        } else if (5 <= this.position && this.position <= 8) {
-            this.row = 7;
-        } else if (9 <= this.position && this.position <= 12) {
-            this.row = 6;
-        } else if (13 <= this.position && this.position <= 16) {
-            this.row = 5;
-        } else if (17 <= this.position && this.position <= 20) {
-            this.row = 4;
-        } else if (21 <= this.position && this.position <= 24) {
-            this.row = 3;
-        } else if (25 <= this.position && this.position <= 28) {
-            this.row = 2;
-        } else if (29 <= this.position && this.position <= 32) {
             this.row = 1;
+        } else if (5 <= this.position && this.position <= 8) {
+            this.row = 2;
+        } else if (9 <= this.position && this.position <= 12) {
+            this.row = 3;
+        } else if (13 <= this.position && this.position <= 16) {
+            this.row = 4;
+        } else if (17 <= this.position && this.position <= 20) {
+            this.row = 5;
+        } else if (21 <= this.position && this.position <= 24) {
+            this.row = 6;
+        } else if (25 <= this.position && this.position <= 28) {
+            this.row = 7;
+        } else if (29 <= this.position && this.position <= 32) {
+            this.row = 8;
         }
     }
 

@@ -7,10 +7,12 @@ package checkers_v5;
 public class MovesAndScores {
     int score;
     Move move;
+    String player;
     
-    MovesAndScores(int currentScore, Move move) {
+    MovesAndScores(int currentScore, Move move, String player) {
         this.score=currentScore;
         this.move = move;
+        this.player = player;
     }
     
     public Move getMove() {

@@ -10,7 +10,6 @@ java.lang.String
 java.lang.Integer
 java.util.ArrayList
 ||:checkers_v5.Checkers_controller
-[Ljava.lang.Integer;
 javafx.scene.Scene
 javafx.fxml.Initializable
 [Ljavafx.scene.shape.Rectangle;
