@@ -341,10 +341,13 @@ public class Game {
         Move tempBestMove = null;
         int bestScore;
         if (currentPlayer.equals("User")) {
-            bestScore = Integer.MIN_VALUE;
-        } else {
             bestScore = Integer.MAX_VALUE;
+        } else {
+            bestScore = Integer.MIN_VALUE;
         }
+
+
+
         List<Move> legalMoves = getAllLegalMoves(state);
         if (depth == 0 || legalMoves.isEmpty()) {
             seCount++;

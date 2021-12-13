@@ -415,7 +415,7 @@ public class Checkers_controller implements Initializable {
             System.out.print("Node: " + p);
             System.out.print(" /n Node class: " + p.getClass());
             System.out.print(" /n Node.toString(): " + p.toString());
-            System.out.print(" /n Node.getScene()" + p.getParent());
+
         }
     }
 
@@ -509,8 +509,18 @@ public class Checkers_controller implements Initializable {
 
     @FXML
     private void moveCurrentChecker(MouseEvent event) {
+
         if (event.getSource() instanceof Rectangle) {
-            selectedTile = (Rectangle) event.getTarget();
+            //selectedTile = (Rectangle) event.getTarget();
+            double SceneX = event.getSceneX();
+            double SceneY = event.getSceneY();
+            Point2D eventInScene = new Point2D(SceneX, SceneY);
+            //Iterate through tiles to find the tile that the selected Checker is on, to mark it as being available if the tile moves
+            for (Rectangle tile : blackTiles) {
+                if (tile.contains(tile.sceneToLocal(eventInScene))) {
+                    selectedTile = tile;
+                }
+            }
             if (ongoingMove) { //selectedChecker != null && model.getCurrentPlayer().equals("User")
                 Checker c = convertCircle(selectedChecker);
                 Tile t = convertRectangle(selectedTile);
@@ -597,6 +607,16 @@ public class Checkers_controller implements Initializable {
         int checkPos = bestMove.getOriginalPos();
         selectedChecker = circles[checkPos - 1];
         selectedTile = tiles[tilePos - 1];
+//        int j = 0;
+//        for (Pane row : panes) {
+//
+//            j++;
+//            if (row.getChildren().contains(selectedChecker)) {
+//                System.out.println(" \n " + row.getChildren());
+//                System.out.println(rectangleGroup.getChildren().toString());
+//            }
+//        }
+
         System.out.println(selectedChecker);
         System.out.println(selectedTile);
 
@@ -622,6 +642,7 @@ public class Checkers_controller implements Initializable {
             }
             model.removeChecker(bestMove.getChecker());
         }
+
 
         //tileState.replace(selectedTile, convertRectangle(selectedTile));
         //checkerState.replace(selectedChecker, convertCircle(selectedChecker));
@@ -673,14 +694,14 @@ public class Checkers_controller implements Initializable {
         double minX = newPosition.boundsInLocalProperty().get().getMinX();
 
         double minY = newPosition.boundsInLocalProperty().get().getMinY();
-        System.out.println("BOUNDS IN PARENT: ( " + minX + ", " + minY + " )");
+        //System.out.println("BOUNDS IN PARENT: ( " + minX + ", " + minY + " )");
         Point2D boundsInScene = currentChecker.localToScene(minX, minY);
-        System.out.println("BOUNDS IN Scene: ( " + boundsInScene.getX() + ", " + boundsInScene.getY() + " )");
+        //System.out.println("BOUNDS IN Scene: ( " + boundsInScene.getX() + ", " + boundsInScene.getY() + " )");
         //Gets the X and Y co ordinates of the new tiles position
         double newX = inParent.getX();
         double newY = inParent.getY();
 
-        System.out.println("CURRENT CALC: ( " + newX + ", " + newY + " )");
+        //System.out.println("CURRENT CALC: ( " + newX + ", " + newY + " )");
 
         //Creates a 2D point with the X and Y co ordinates
         Point2D finalPos = new Point2D(newX, newY);
@@ -707,6 +728,28 @@ public class Checkers_controller implements Initializable {
         translate.setX(newX - inScene.getX());
         translate.setY(newY - inScene.getY());
         checker.getTransforms().addAll(translate);
+
+//        for (Pane row : panes) {
+//            //i++;
+//            if (row.getChildren().contains(selectedChecker)) {
+//                System.out.println(row.getChildren());
+//                System.out.println(rectangleGroup.getChildren().toString());
+//            }
+//        }
+//
+//        for (int i = 0; i < panes.size(); i++) {
+//            if (panes.get(i).getChildren().contains(checker)) {
+//                System.out.println(panes.get(i));
+//                System.out.println(panes.get(i).getChildren());
+//                //panes.get(i).getChildren().remove(checker);
+//
+//            }
+//            if (panes.get(i).contains(newX - inScene.getX(), newY - inScene.getY())) {
+//                System.out.println(panes.get(i));
+//                //panes.get(i).getChildren().add(checker);
+//
+//            }
+//        }
 
         checker.setOpacity(1.0);
         //Updating the available positions based on the move
