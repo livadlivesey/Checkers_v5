@@ -2,6 +2,7 @@ package checkers_v5;
 
 import java.util.ArrayList;
 import java.util.List;
+import javafx.scene.shape.Circle;
 
 /**
  * Write a description of class Checker here.
@@ -11,27 +12,30 @@ import java.util.List;
  */
 public class Checker {
     // instance variables - replace the example below with your own
-    //private final javafx.scene.paint.Color colour;
-
     private boolean isKing;
-    double tile_size = 20;
-    int position;
-    private String owner;
+    private int position;
+    private final String owner;
     private List<Integer> neighbours;
     private int row;
     private int column;
+    private final Circle circle;
 
-    public Checker(int position, String owner) {
+    public Checker(int position, String owner, Circle circle) {
         this.owner = owner;
         this.position = position;
         this.isKing = false;
+        this.circle = circle;
         calculateNeighbouringPositions();
         calculate_row();
         calculate_col();
     }
     
+    public Circle getCircle() {
+        return this.circle;
+    }
+    
     public Checker cloneChecker() {
-        Checker clone = new Checker(this.position, this.owner);
+        Checker clone = new Checker(this.position, this.owner, this.circle);
         if (this.isKing) {
             clone.setKing();            
         }
@@ -95,9 +99,9 @@ public class Checker {
 
     public boolean isKing() {
         //if reached the opposite end of board
-        if (this.owner == "Computer" && this.row == 8) {
+        if ("Computer".equals(this.owner) && this.row == 8) {
             setKing();
-        } else if (this.owner == "User" && this.row == 1) {
+        } else if ("User".equals(this.owner) && this.row == 1) {
             setKing();
         }
         return this.isKing;

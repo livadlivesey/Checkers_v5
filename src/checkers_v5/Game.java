@@ -50,8 +50,8 @@ public class Game {
      * Updates the state representation with the current move
      *
      * @param checker The checker that has been moved
-     * @param oldPosition The original checker position
-     * @param newPosition The new position
+     * @param newTile
+     * @param state
      */
     public void move(Checker checker, Tile newTile, Tile[] state) {
         //System.out.println("MOVING: "+checker.toString());
@@ -109,7 +109,6 @@ public class Game {
                         //Set as a capturing move
                         m.setCapturingMove();
                         int capturedPos = tile.getPosition();
-
                         m.setCapturedChecker(gameState[capturedPos-1].getChecker());
                         System.out.println(m);
                         legalMoves.add(m);   
@@ -211,7 +210,7 @@ public class Game {
     public Tile[] cloneState(Tile[] currentState) {
         Tile[] state = new Tile[32];
         for (int i = 0; i < currentState.length; i++) {
-            state[i] = new Tile(currentState[i].position);
+            state[i] = new Tile(currentState[i].position, currentState[i].getRectangle());
             if (currentState[i].hasChecker()) {
                 state[i].setChecker(currentState[i].getChecker().cloneChecker());
             }
@@ -457,7 +456,7 @@ public class Game {
         return ai_score - human_score;
     }
 
-    public void setDifficulty(int difficulty) {
+    private void setDifficulty(int difficulty) {
         this.depthLimit = difficulty;
     }
 

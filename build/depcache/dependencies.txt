@@ -10,9 +10,7 @@ java.lang.String
 java.lang.Integer
 java.util.ArrayList
 ||:checkers_v5.Checkers_controller
-javafx.scene.Scene
 javafx.fxml.Initializable
-[Ljavafx.scene.shape.Rectangle;
 javafx.scene.control.Alert$AlertType
 java.lang.Double
 javafx.scene.control.ButtonType
@@ -21,14 +19,13 @@ javafx.scene.input.MouseEvent
 checkers_v5.Tile
 javafx.collections.FXCollections
 javafx.scene.control.ChoiceDialog
+[Lcheckers_v5.Tile;
 javafx.scene.layout.VBox
 java.lang.Integer
 java.util.ArrayList
-javafx.fxml.FXMLLoader
 javafx.geometry.Point2D
 javafx.scene.transform.Transform
 javafx.scene.shape.Circle
-java.util.Hashtable
 javafx.scene.layout.Pane
 java.io.PrintStream
 javafx.scene.effect.InnerShadow
@@ -48,7 +45,6 @@ checkers_v5.Move
 java.util.List
 java.lang.StringBuilder
 java.lang.Object
-java.lang.Class
 javafx.collections.ObservableList
 javafx.geometry.Bounds
 ||:checkers_v5.Checkers_v5
@@ -77,6 +73,7 @@ checkers_v5.Checker
 checkers_v5.Tile
 java.lang.StringBuilder
 java.lang.Object
+java.lang.String
 checkers_v5.Move
 ||:checkers_v5.Game
 java.io.PrintStream

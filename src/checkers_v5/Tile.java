@@ -7,6 +7,7 @@ package checkers_v5;
 
 
 import java.util.List;
+import javafx.scene.shape.Rectangle;
 
 
 /**
@@ -20,16 +21,22 @@ public class Tile {
     private int row;
     int position;
     private int column;
+    Rectangle rectangle;
 
 
-    public Tile(int position) {
+    public Tile(int position, Rectangle rectangle) {
         hasChecker = false;
         currentChecker = null;
         this.position = position;
         this.row=getRow();
         this.column = getCol();
+        this.rectangle = rectangle;
         //calculate_row();
         //calculate_col();
+    }
+    
+    public Rectangle getRectangle() {
+        return this.rectangle;
     }
 
     public int getRow() {

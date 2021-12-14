@@ -8,8 +8,8 @@ import java.util.Objects;
  */
 public class Move {
 
-    private int originalPos;
-    private int newPos;
+    private final int originalPos;
+    private final int newPos;
     Checker checker;
     Tile newTile;
     boolean isCapturing = false;
@@ -18,8 +18,8 @@ public class Move {
     public Move(Checker checker, Tile destination) {
         this.checker = checker;
         this.newTile = destination;
-        this.originalPos = checker.position;
-        this.newPos = newTile.position;
+        this.originalPos = checker.getPosition();
+        this.newPos = newTile.getPosition();
         this.isCapturing = false;
         this.capturedChecker = null;
     }
@@ -64,7 +64,11 @@ public class Move {
 
     @Override
     public String toString() {
-        String s = "Checker: " + this.checker.toString() + ", Tile: " + this.newTile.toString() + "Capturing: "+ this.capturedChecker;
+        String s = "Checker: " + this.checker.toString() + ", Tile: " + this.newTile.toString();
+        if (this.isCapturing) {
+            s += "Capturing: "+ this.capturedChecker;
+        }
+        
         return s;
     }
 
