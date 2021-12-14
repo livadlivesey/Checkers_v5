@@ -347,12 +347,12 @@ public class Game {
         }        
 
         Move tempBestMove = null;
-//        int bestScore;
-//        if (currentPlayer.equals("User")) {
-//            bestScore = Integer.MAX_VALUE;
-//        } else {
-//            bestScore = Integer.MIN_VALUE;
-//        }
+        int bestScore;
+        if (currentPlayer.equals("User")) {
+            bestScore = Integer.MAX_VALUE;
+        } else {
+            bestScore = Integer.MIN_VALUE;
+        }
 
 
         if (currentPlayer.equals("User")) {
@@ -396,7 +396,7 @@ public class Game {
             this.bestMove = tempBestMove;
             return bestScore;
         } else {
-            int bestScore = Integer.MIN_VALUE; //Computer is maximizing player
+            bestScore = Integer.MIN_VALUE; //Computer is maximizing player
             List<Move> compMoves = getCompMoves(legalMoves);
             for (Move move : compMoves) {
                 //state = cloneState(gameState);
