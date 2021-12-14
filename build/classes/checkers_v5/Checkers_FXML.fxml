@@ -15,7 +15,7 @@
 
 <VBox fx:id="root" maxHeight="700.0" minWidth="400" prefHeight="800.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="checkers_v5.Checkers_controller">  
     <children>
-        <HBox fx:id = "hbox" prefHeight="40.0" prefWidth="700.0" style="-fx-border-color: BLACK; -fx-border-width: 2;">
+        <HBox fx:id="hbox" prefHeight="40.0" prefWidth="700.0" style="-fx-border-color: BLACK; -fx-border-width: 2;">
             <children>
                 <MenuBar prefHeight="40.0" prefWidth="700.0" style="-fx-font-size: 10; -fx-background-color: BLACK;">
                     <menus>
@@ -24,14 +24,15 @@
                                 <MenuItem mnemonicParsing="false" onAction="#newGame" text="Start New Game" />
                             </items>
                         </Menu>
-                        <Menu id="rulesMenu" mnemonicParsing="false" style="-fx-background-color: RED;" text="Edit">
+                        <Menu id="rulesMenu" mnemonicParsing="false" style="-fx-background-color: RED;" text="Rules">
                             <items>
-                                <MenuItem mnemonicParsing="false" text="Delete" />
+                                <MenuItem mnemonicParsing="false" onAction="#showRules" text="Open Checkers Rules" />
                             </items>
                         </Menu>
-                        <Menu id="helpMenu" mnemonicParsing="false" style="-fx-background-color: RED;" text="Help">
+                        <Menu id="helpMenu" mnemonicParsing="false" style="-fx-background-color: RED;" text="Help!">
                             <items>
-                                <MenuItem mnemonicParsing="false" text="About" />
+                        <MenuItem mnemonicParsing="false" onAction="#getAllHints" text="Hint: All available moves" />
+                                <MenuItem mnemonicParsing="false" onAction="#getBestHint" text="Hint: Best available move" />
                             </items>
                         </Menu>
                     </menus>

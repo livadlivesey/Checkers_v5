@@ -325,7 +325,7 @@ public class Checkers_controller implements Initializable {
 
         }
         Integer levels[] = {1, 2, 3, 4, 5};
-        ChoiceDialog<Integer> difficulty = new ChoiceDialog<>(levels[3], levels);
+        ChoiceDialog<Integer> difficulty = new ChoiceDialog<>(levels[2], levels);
         difficulty.setTitle("Choose Game difficulty");
         difficulty.setContentText("Easy for beginners, Intermediate if you like a challenge, Difficult if you want to try the impossible!");
         // show the dialog
@@ -396,7 +396,7 @@ public class Checkers_controller implements Initializable {
 
         }
         Integer levels[] = {1, 2, 3, 4, 5};
-        ChoiceDialog<Integer> difficulty = new ChoiceDialog<>(levels[3], levels);
+        ChoiceDialog<Integer> difficulty = new ChoiceDialog<>(levels[2], levels);
         difficulty.setTitle("Choose Game difficulty");
         difficulty.setContentText("Easy for beginners, Intermediate if you like a challenge, Difficult if you want to try the impossible!");
         // show the dialog
@@ -437,10 +437,41 @@ public class Checkers_controller implements Initializable {
     }
 
     @FXML
-    public void selectChecker(MouseEvent event) {
-        if (ongoingMove && event.getSource() instanceof Circle) {
-            // Convert circle if in legal moves
+    public void getAllHints(MouseEvent event) {
+        List<Move> hints = model.getAllHints();
+        // Need to figure out how to distinguish between different moves
+        //Using timer?
 
+    }
+
+    @FXML
+    public void getBestHint() {
+        model.startEval();
+        bestMove = model.getBestMove2();
+        Checker bestChecker = bestMove.getChecker();
+        Tile bestTile = bestMove.getTile();
+        selectedChecker = bestChecker.getCircle();
+        selectedTile = bestTile.getRectangle();
+        selectedChecker.setEffect(tileShadow);
+        selectedChecker.setOpacity(1.0);
+        selectedTile.setEffect(tileShadow);
+        selectedTile.setOpacity(1.0);
+
+    }
+
+    @FXML
+    public void showRules() {
+        Alert rules = new Alert(AlertType.INFORMATION);
+        rules.setTitle("Checkers Rules");
+        rules.setHeaderText("Checkers Rules");
+        rules.setContentText("TODO: INSERT RULES HERE");
+        rules.showAndWait();
+
+    }
+
+    @FXML
+    public void selectChecker(MouseEvent event) {
+        if (ongoingMove && event.getSource() instanceof Circle && selectedChecker != null) {
             if (!potentialMoves.isEmpty()) {
                 for (Move move : potentialMoves) {
                     Tile t = move.getTile();
@@ -448,7 +479,6 @@ public class Checkers_controller implements Initializable {
                 }
             }
             selectedChecker.setOpacity(1.0);
-
             //If a checker has already been selected, but the user has now selected a different one, change selection
             if (selectedChecker.equals(event.getSource())) {
                 //If the checker is clicked twice, de select it and remove effect for all potential highlighted moves
@@ -465,16 +495,16 @@ public class Checkers_controller implements Initializable {
 
             //Get the tile that the checker is on
             currentTile = getCurrentTile(event);
-
             //Add an effect to all the possible moves if the level is selected as Easy
-            if (level == 1) {
-                potentialMoves = model.getLegalMoves(convertCircle(selectedChecker), model.gameState);
-                for (Move move : potentialMoves) {
-                    Tile t = move.getTile();
-                    t.getRectangle().setEffect(tileShadow);
-                    t.getRectangle().setOpacity(1.0);
-                }
+            //if (level == 1 || level == 1 || level == 3) {
+            potentialMoves = model.getUserMoves(model.getLegalMoves(convertCircle(selectedChecker), model.gameState));
+            System.out.println(" Available User Moves: "+potentialMoves);
+            for (Move move : potentialMoves) {
+                Tile t = move.getTile();
+                t.getRectangle().setEffect(tileShadow);
+                t.getRectangle().setOpacity(1.0);
             }
+            //}
             //Assign that there is an ongoing move
             ongoingMove = true;
         }
@@ -505,27 +535,34 @@ public class Checkers_controller implements Initializable {
     @FXML
     private void selectNewTile(MouseEvent event) {
         if (ongoingMove && event.getSource() instanceof Rectangle && !event.getSource().equals(currentTile)) { // && event.getSource() instanceof Rectangle
-            highlightedTile = (Rectangle) event.getSource();
-            //highlightedTile.setFill(Color.BLUEVIOLET);
-            highlightedTile.setEffect(tileShadow2);
-
+            Rectangle r = (Rectangle) event.getSource();
+            for (Move move : potentialMoves) {
+                if (move.getTile().getRectangle().equals(r)) {
+                    r.setEffect(tileShadow2);
+                    r.setOpacity(1.0);
+                } else {
+                    highlightedTile = (Rectangle) event.getSource();
+                    highlightedTile.setEffect(tileShadow2);
+                    highlightedTile.setOpacity(1.0);
+                    break;
+                }
+            }
         }
     }
 
     @FXML
     private void removeTileSelection(MouseEvent event) {
-        if (event.getSource() instanceof Rectangle && highlightedTile != null && event.getSource().equals(highlightedTile)) { // 
-            if (highlightedTile.getEffect().equals(tileShadow2)) {
-                for (Move move : potentialMoves) {
-                    if (move.getTile().getRectangle().equals(highlightedTile) && move.getChecker().getCircle().equals(selectedChecker)) {
-                        move.getTile().getRectangle().setEffect(tileShadow);
-                    } else {
-                        highlightedTile.setEffect(null);
-                        highlightedTile = null;
-                    }
+        if (ongoingMove) {
+            Rectangle r = (Rectangle) event.getSource();
+            for (Move move : potentialMoves) {
+                if (move.getTile().getRectangle().equals(r) && move.getChecker().getCircle().equals(selectedChecker)) {
+                    move.getTile().getRectangle().setEffect(tileShadow);
+                    move.getTile().getRectangle().setOpacity(1.0);
                 }
-            } else {
+            }
+            if (event.getSource().equals(highlightedTile)) {  //&& !highlightedTile.equals(r)
                 highlightedTile.setEffect(null);
+                highlightedTile.setOpacity(0.0);
                 highlightedTile = null;
             }
         }
@@ -541,12 +578,11 @@ public class Checkers_controller implements Initializable {
                 Tile t = convertRectangle(selectedTile);
                 //model.selectedTile = convertRectangle(selectedTile);
                 List<Move> available = model.getAllLegalMoves(model.gameState);
-                System.out.println(available);
-                System.out.println(new Move(c,t));
                 if (available.contains(new Move(c, t))) {
                     for (int i = 0; i < available.size(); i++) {
                         if (new Move(c, t).equals(available.get(i))) {
                             currentMove = available.get(i);
+                            System.out.println(" User Move: " +currentMove);
                         }
                     }
                     //Calculating the position of the tile and current checker in the same parent node
@@ -569,9 +605,9 @@ public class Checkers_controller implements Initializable {
                         // Remove from the model
                         model.removeChecker(currentMove.getChecker());
                         //TODO: Remove circle too?
-                    } 
+                    }
                     model.move(c, t, model.gameState);
-                    
+
                     if (model.isGameOver(model.gameState)) {
                         Alert alert = new Alert(AlertType.WARNING, " ", ButtonType.OK);
                         alert.setContentText("The game is over, the winner is: TO DO ");
@@ -579,15 +615,20 @@ public class Checkers_controller implements Initializable {
                         alert.setTitle("Game Over");
                         alert.showAndWait();
                     }
+                    
+                    model.nextTurn();
+                    System.out.println("\n I'm thinking...");
+                    moveCompChecker();
 
                     for (Move move : available) {
                         move.getTile().getRectangle().setEffect(null);
+                        move.getTile().getRectangle().setOpacity(0.0);
                     }
-                    updateStates();
+                    //updateStates();
 
-                    model.currentPlayer = "Computer";
-                    System.out.println("\n I'm thinking...");
-                    moveCompChecker();
+                    //model.currentPlayer = "Computer";
+                    //System.out.println("\n I'm thinking...");
+                    //moveCompChecker();
 
                 } else {
                     Alert alert = new Alert(AlertType.WARNING, " ", ButtonType.OK);
@@ -617,7 +658,7 @@ public class Checkers_controller implements Initializable {
         //THen automatically do the computer move
         model.startEval();
         System.out.println("\n SE: " + model.seCount + " DE: " + model.deCount + " P: " + model.pCount);
-        System.out.print("Model.bestMove: " + model.bestMove);
+        System.out.print("AI Move: " + model.bestMove);
 
         bestMove = model.getBestMove2();
         Checker bestChecker = bestMove.getChecker();
@@ -633,8 +674,7 @@ public class Checkers_controller implements Initializable {
 
         //Transform co-ordinates of checker to new tile point
         move_position(selectedChecker, newX, newY);
-        model.move(bestChecker, bestTile, model.gameState);
-
+        
         //If the move is a capturing move, make sure to remove the piece from board and representations
         if (currentMove.isCapturingMove()) {
             //Get the captured checker 
@@ -648,7 +688,8 @@ public class Checkers_controller implements Initializable {
             // Remove from the model
             model.removeChecker(captured);
             //TODO: Remove circle from checker and window
-        } 
+        }
+        model.move(bestChecker, bestTile, model.gameState);
         model.currentPlayer = "User";
         updateStates();
     }
@@ -768,7 +809,7 @@ public class Checkers_controller implements Initializable {
                 break;
             }
         }
-        return model.gameState[i-1].getChecker();
+        return model.gameState[i - 1].getChecker();
         //return checkerState.get(c);
     }
 
@@ -781,7 +822,7 @@ public class Checkers_controller implements Initializable {
             }
         }
 
-        return model.gameState[i-1];
+        return model.gameState[i - 1];
     }
 
     public Rectangle convertTile(Tile t) {
