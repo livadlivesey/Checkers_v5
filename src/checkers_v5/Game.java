@@ -24,7 +24,7 @@ public class Game {
     List<MovesAndScores> successorEvaluations;
 
     //To reference current objects
-    Checker currentChecker;
+    Checker selectedChecker;
     Checker capturedChecker;
     Tile currentTile;
     Tile selectedTile;
