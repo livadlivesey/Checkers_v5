@@ -13,9 +13,9 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<VBox maxHeight="800.0" minWidth="400" prefHeight="800.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="checkers_v5.Checkers_controller">  
+<VBox fx:id="root" maxHeight="700.0" minWidth="400" prefHeight="800.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="checkers_v5.Checkers_controller">  
     <children>
-        <HBox prefHeight="40.0" prefWidth="700.0" style="-fx-border-color: BLACK; -fx-border-width: 2;">
+        <HBox fx:id = "hbox" prefHeight="40.0" prefWidth="700.0" style="-fx-border-color: BLACK; -fx-border-width: 2;">
             <children>
                 <MenuBar prefHeight="40.0" prefWidth="700.0" style="-fx-font-size: 10; -fx-background-color: BLACK;">
                     <menus>
@@ -38,124 +38,124 @@
                 </MenuBar>
             </children>
         </HBox>
-        <VBox fx:id="vbox" alignment="TOP_LEFT" prefHeight="700.0" prefWidth="700.0" scaleShape="true" scaleX="0.75" scaleY="0.75" style="-fx-background-color: GRAY;" translateX="-50.0" translateY="-70.0" VBox.vgrow="ALWAYS">
+        <VBox fx:id="vbox" prefHeight="700.0" prefWidth="700.0" scaleShape="true" scaleX="0.75" scaleY="0.75" style="-fx-background-color: BLACK;" translateX="-50.0" translateY="-70.0" VBox.vgrow="ALWAYS">
             <children>
                 <Group fx:id="rectangleGroup" scaleX="1.0" scaleY="1.0">   
                     <children>
-                        <Pane fx:id="row7" style="-fx-border-color: BLACK">
+                        <Pane fx:id="row0" pickOnBounds="false">
                             <children>
-                                <Rectangle fx:id="sq0_7" arcHeight="5.0" arcWidth="5.0" fill="RED" height="100.0" stroke="BLACK" strokeType="INSIDE" styleClass="board_square" width="100.0" />
-                                <Rectangle fx:id="pos1" arcHeight="5.0" arcWidth="5.0" height="100.0" layoutX="100.0" onMouseClicked="#moveCurrentChecker" onMouseEntered="#selectNewTile" onMouseExited="#removeTileSelection" stroke="BLACK" strokeType="INSIDE" styleClass="board_square_lt" width="100.0" />
-                                <Rectangle fx:id="sq2_7" arcHeight="5.0" arcWidth="5.0" fill="RED" height="100.0" layoutX="200.0" stroke="BLACK" strokeType="INSIDE" styleClass="board_square" width="100.0" />
-                                <Rectangle fx:id="pos2" arcHeight="5.0" arcWidth="5.0" height="100.0" layoutX="300.0" onMouseClicked="#moveCurrentChecker" onMouseEntered="#selectNewTile" onMouseExited="#removeTileSelection" stroke="BLACK" strokeType="INSIDE" styleClass="board_square_lt" width="100.0" />
-                                <Rectangle fx:id="sq4_7" arcHeight="5.0" arcWidth="5.0" fill="RED" height="100.0" layoutX="400.0" stroke="BLACK" strokeType="INSIDE" styleClass="board_square" width="100.0" />
-                                <Rectangle fx:id="pos3" arcHeight="5.0" arcWidth="5.0" height="100.0" layoutX="500.0" onMouseClicked="#moveCurrentChecker" onMouseEntered="#selectNewTile" onMouseExited="#removeTileSelection" stroke="BLACK" strokeType="INSIDE" styleClass="board_square_lt" width="100.0" />
-                                <Rectangle fx:id="sq6_7" arcHeight="5.0" arcWidth="5.0" fill="RED" height="100.0" layoutX="600.0" stroke="BLACK" strokeType="INSIDE" styleClass="board_square" width="100.0" />
-                                <Rectangle fx:id="pos4" arcWidth="5.0" height="100.0" layoutX="700.0" onMouseClicked="#moveCurrentChecker" onMouseEntered="#selectNewTile" onMouseExited="#removeTileSelection" stroke="BLACK" strokeType="INSIDE" styleClass="board_square_lt" width="100.0" />
+                                <Rectangle fx:id="sq0_7" fill="RED" height="100.0" stroke="BLACK" strokeType="INSIDE" width="100.0" />
+                                <Rectangle fx:id="pos1" height="100.0" layoutX="100.0" onMouseClicked="#moveCurrentChecker" onMouseEntered="#selectNewTile" onMouseExited="#removeTileSelection" opacity="0.0" width="100.0" />
+                                <Rectangle fx:id="sq2_7" fill="RED" height="100.0" layoutX="200.0" stroke="BLACK" strokeType="INSIDE" styleClass="board_square" width="100.0" />
+                                <Rectangle fx:id="pos2" height="100.0" layoutX="300.0" onMouseClicked="#moveCurrentChecker" onMouseEntered="#selectNewTile" onMouseExited="#removeTileSelection" opacity="0.0" width="100.0" />
+                                <Rectangle fx:id="sq4_7" fill="RED" height="100.0" layoutX="400.0" stroke="BLACK" strokeType="INSIDE" styleClass="board_square" width="100.0" />
+                                <Rectangle fx:id="pos3" height="100.0" layoutX="500.0" onMouseClicked="#moveCurrentChecker" onMouseEntered="#selectNewTile" onMouseExited="#removeTileSelection" opacity="0.0" width="100.0" />
+                                <Rectangle fx:id="sq6_7" fill="RED" height="100.0" layoutX="600.0" stroke="BLACK" strokeType="INSIDE" styleClass="board_square" width="100.0" />
+                                <Rectangle fx:id="pos4" arcWidth="5.0" height="100.0" layoutX="700.0" onMouseClicked="#moveCurrentChecker" onMouseEntered="#selectNewTile" onMouseExited="#removeTileSelection" opacity="0.0" width="100.0" />
                                 <Circle fx:id="comp_1" centerX="10.0" centerY="10.0" fill="WHITE" layoutX="140.0" layoutY="40.0" radius="40.0" stroke="WHITE" strokeType="INSIDE" />  
                                 <Circle fx:id="comp_2" centerX="10.0" centerY="10.0" fill="WHITE" layoutX="340.0" layoutY="40.0" radius="40.0" stroke="WHITE" strokeType="INSIDE" />  
                                 <Circle fx:id="comp_3" centerX="10.0" centerY="10.0" fill="WHITE" layoutX="540.0" layoutY="40.0" radius="40.0" stroke="WHITE" strokeType="INSIDE" />
                                 <Circle fx:id="comp_4" centerX="10.0" centerY="10.0" fill="WHITE" layoutX="740.0" layoutY="40.0" radius="40.0" stroke="WHITE" strokeType="INSIDE" />
                             </children>
                         </Pane>
-                        <Pane fx:id="row6" layoutY="100.0">
+                        <Pane fx:id="row1" layoutY="100.0" pickOnBounds="false">
                             <children>
-                                <Rectangle fx:id="pos5" arcHeight="5.0" arcWidth="5.0" height="100.0" onMouseClicked="#moveCurrentChecker" onMouseEntered="#selectNewTile" onMouseExited="#removeTileSelection" stroke="BLACK" strokeType="INSIDE" styleClass="board_square_lt" width="100.0" />
-                                <Rectangle fx:id="sq1_6" arcHeight="5.0" arcWidth="5.0" fill="RED" height="100.0" layoutX="100.0" stroke="BLACK" strokeType="INSIDE" styleClass="board_square" width="100.0" />
-                                <Rectangle fx:id="pos6" arcHeight="5.0" arcWidth="5.0" height="100.0" layoutX="200.0" onMouseClicked="#moveCurrentChecker" onMouseEntered="#selectNewTile" onMouseExited="#removeTileSelection" stroke="BLACK" strokeType="INSIDE" styleClass="board_square_lt" width="100.0" />
-                                <Rectangle fx:id="sq3_6" arcHeight="5.0" arcWidth="5.0" fill="RED" height="100.0" layoutX="300.0" stroke="BLACK" strokeType="INSIDE" styleClass="board_square" width="100.0" />
-                                <Rectangle fx:id="pos7" arcHeight="5.0" arcWidth="5.0" height="100.0" layoutX="400.0" onMouseClicked="#moveCurrentChecker" onMouseEntered="#selectNewTile" onMouseExited="#removeTileSelection" stroke="BLACK" strokeType="INSIDE" styleClass="board_square_lt" width="100.0" />
-                                <Rectangle fx:id="sq5_6" arcHeight="5.0" arcWidth="5.0" fill="RED" height="100.0" layoutX="500.0" stroke="BLACK" strokeType="INSIDE" styleClass="board_square" width="100.0" />
-                                <Rectangle fx:id="pos8" arcHeight="5.0" arcWidth="5.0" height="100.0" layoutX="600.0" onMouseClicked="#moveCurrentChecker" onMouseEntered="#selectNewTile" onMouseExited="#removeTileSelection" stroke="BLACK" strokeType="INSIDE" styleClass="board_square_lt" width="100.0" />
-                                <Rectangle fx:id="sq7_6" arcHeight="5.0" arcWidth="5.0" fill="RED" height="100.0" layoutX="700.0" stroke="BLACK" strokeType="INSIDE" styleClass="board_square" width="100.0" />
+                                <Rectangle fx:id="pos5" height="100.0" onMouseClicked="#moveCurrentChecker" onMouseEntered="#selectNewTile" onMouseExited="#removeTileSelection" opacity="0.0" width="100.0" />
+                                <Rectangle fx:id="sq1_6" fill="RED" height="100.0" layoutX="100.0" stroke="BLACK" strokeType="INSIDE" width="100.0" />
+                                <Rectangle fx:id="pos6" height="100.0" layoutX="200.0" onMouseClicked="#moveCurrentChecker" onMouseEntered="#selectNewTile" onMouseExited="#removeTileSelection" opacity="0.0" width="100.0" />
+                                <Rectangle fx:id="sq3_6" fill="RED" height="100.0" layoutX="300.0" stroke="BLACK" strokeType="INSIDE" width="100.0" />
+                                <Rectangle fx:id="pos7" height="100.0" layoutX="400.0" onMouseClicked="#moveCurrentChecker" onMouseEntered="#selectNewTile" onMouseExited="#removeTileSelection" opacity="0.0" width="100.0" />
+                                <Rectangle fx:id="sq5_6" fill="RED" height="100.0" layoutX="500.0" stroke="BLACK" strokeType="INSIDE" width="100.0" />
+                                <Rectangle fx:id="pos8" height="100.0" layoutX="600.0" onMouseClicked="#moveCurrentChecker" onMouseEntered="#selectNewTile" onMouseExited="#removeTileSelection" opacity="0.0" width="100.0" />
+                                <Rectangle fx:id="sq7_6" fill="RED" height="100.0" layoutX="700.0" stroke="BLACK" strokeType="INSIDE" width="100.0" />
                                 <Circle fx:id="comp_8" centerX="10.0" centerY="10.0" fill="WHITE" layoutX="640.0" layoutY="40.0" radius="40.0" stroke="WHITE" strokeType="INSIDE" />
                                 <Circle fx:id="comp_7" centerX="10.0" centerY="10.0" fill="WHITE" layoutX="440.0" layoutY="40.0" radius="40.0" stroke="WHITE" strokeType="INSIDE" />
                                 <Circle fx:id="comp_6" centerX="10.0" centerY="10.0" fill="WHITE" layoutX="240.0" layoutY="40.0" radius="40.0" stroke="WHITE" strokeType="INSIDE" />
                                 <Circle fx:id="comp_5" centerX="10.0" centerY="10.0" fill="WHITE" layoutX="40.0" layoutY="40.0" radius="40.0" stroke="WHITE" strokeType="INSIDE" />
                             </children>
                         </Pane>
-                        <Pane fx:id="row5" layoutY="200.0">
+                        <Pane fx:id="row2" layoutY="200.0" pickOnBounds="false">
                             <children>
                                 <Rectangle fx:id="sq0_5" arcHeight="5.0" arcWidth="5.0" fill="RED" height="100.0" stroke="BLACK" strokeType="INSIDE" styleClass="board_square" width="100.0" />
-                                <Rectangle fx:id="pos9" arcHeight="5.0" arcWidth="5.0" height="100.0" layoutX="100.0" onMouseClicked="#moveCurrentChecker" onMouseEntered="#selectNewTile" onMouseExited="#removeTileSelection" stroke="BLACK" strokeType="INSIDE" styleClass="board_square_lt" width="100.0" />
+                                <Rectangle fx:id="pos9" height="100.0" layoutX="100.0" onMouseClicked="#moveCurrentChecker" onMouseEntered="#selectNewTile" onMouseExited="#removeTileSelection" opacity="0.0" width="100.0" />
                                 <Rectangle fx:id="sq2_5" arcHeight="5.0" arcWidth="5.0" fill="RED" height="100.0" layoutX="200.0" stroke="BLACK" strokeType="INSIDE" styleClass="board_square" width="100.0" />
-                                <Rectangle fx:id="pos10" arcHeight="5.0" arcWidth="5.0" height="100.0" layoutX="300.0" onMouseClicked="#moveCurrentChecker" onMouseEntered="#selectNewTile" onMouseExited="#removeTileSelection" stroke="BLACK" strokeType="INSIDE" styleClass="board_square_lt" width="100.0" />
+                                <Rectangle fx:id="pos10" height="100.0" layoutX="300.0" onMouseClicked="#moveCurrentChecker" onMouseEntered="#selectNewTile" onMouseExited="#removeTileSelection" opacity="0.0" width="100.0" />
                                 <Rectangle fx:id="sq4_5" arcHeight="5.0" arcWidth="5.0" fill="RED" height="100.0" layoutX="400.0" stroke="BLACK" strokeType="INSIDE" styleClass="board_square" width="100.0" />
-                                <Rectangle fx:id="pos11" arcHeight="5.0" arcWidth="5.0" height="100.0" layoutX="500.0" onMouseClicked="#moveCurrentChecker" onMouseEntered="#selectNewTile" onMouseExited="#removeTileSelection" stroke="BLACK" strokeType="INSIDE" styleClass="board_square_lt" width="100.0" />
+                                <Rectangle fx:id="pos11" height="100.0" layoutX="500.0" onMouseClicked="#moveCurrentChecker" onMouseEntered="#selectNewTile" onMouseExited="#removeTileSelection" opacity="0.0" width="100.0" />
                                 <Rectangle fx:id="sq6_5" arcHeight="5.0" arcWidth="5.0" fill="RED" height="100.0" layoutX="600.0" stroke="BLACK" strokeType="INSIDE" styleClass="board_square" width="100.0" />
-                                <Rectangle fx:id="pos12" arcHeight="5.0" arcWidth="5.0" height="100.0" layoutX="700.0" onMouseClicked="#moveCurrentChecker" onMouseEntered="#selectNewTile" onMouseExited="#removeTileSelection" stroke="BLACK" strokeType="INSIDE" styleClass="board_square_lt" width="100.0" />
+                                <Rectangle fx:id="pos12" height="100.0" layoutX="700.0" onMouseClicked="#moveCurrentChecker" onMouseEntered="#selectNewTile" onMouseExited="#removeTileSelection" opacity="0.0" width="100.0" />
                                 <Circle fx:id="comp_9" centerX="10.0" centerY="10.0" fill="WHITE" layoutX="140.0" layoutY="40.0" radius="40.0" stroke="WHITE" strokeType="INSIDE" />
                                 <Circle fx:id="comp_10" centerX="10.0" centerY="10.0" fill="WHITE" layoutX="340.0" layoutY="40.0" radius="40.0" stroke="WHITE" strokeType="INSIDE" />
                                 <Circle fx:id="comp_11" centerX="10.0" centerY="10.0" fill="WHITE" layoutX="540.0" layoutY="40.0" radius="40.0" stroke="WHITE" strokeType="INSIDE" />
                                 <Circle fx:id="comp_12" centerX="10.0" centerY="10.0" fill="WHITE" layoutX="740.0" layoutY="40.0" radius="40.0" stroke="WHITE" strokeType="INSIDE" />
                             </children>
                         </Pane>
-                        <Pane fx:id="row4" layoutY="300.0">
+                        <Pane fx:id="row3" layoutY="300.0" pickOnBounds="false">
                             <children>
-                                <Rectangle fx:id="pos13" arcHeight="5.0" arcWidth="5.0" height="100.0" onMouseClicked="#moveCurrentChecker" onMouseEntered="#selectNewTile" onMouseExited="#removeTileSelection" stroke="BLACK" strokeType="INSIDE" styleClass="board_square_lt" width="100.0" />
+                                <Rectangle fx:id="pos13" height="100.0" onMouseClicked="#moveCurrentChecker" onMouseEntered="#selectNewTile" onMouseExited="#removeTileSelection" opacity="0.0" width="100.0" />
                                 <Rectangle fx:id="sq1_4" arcHeight="5.0" arcWidth="5.0" fill="RED" height="100.0" layoutX="100.0" stroke="BLACK" strokeType="INSIDE" styleClass="board_square" width="100.0" />
-                                <Rectangle fx:id="pos14" arcHeight="5.0" arcWidth="5.0" height="100.0" layoutX="200.0" onMouseClicked="#moveCurrentChecker" onMouseEntered="#selectNewTile" onMouseExited="#removeTileSelection" stroke="BLACK" strokeType="INSIDE" styleClass="board_square_lt" width="100.0" />
+                                <Rectangle fx:id="pos14" height="100.0" layoutX="200.0" onMouseClicked="#moveCurrentChecker" onMouseEntered="#selectNewTile" onMouseExited="#removeTileSelection" opacity="0.0" width="100.0" />
                                 <Rectangle fx:id="sq3_4" arcHeight="5.0" arcWidth="5.0" fill="RED" height="100.0" layoutX="300.0" stroke="BLACK" strokeType="INSIDE" styleClass="board_square" width="100.0" />
-                                <Rectangle fx:id="pos15" arcHeight="5.0" arcWidth="5.0" height="100.0" layoutX="400.0" onMouseClicked="#moveCurrentChecker" onMouseEntered="#selectNewTile" onMouseExited="#removeTileSelection" stroke="BLACK" strokeType="INSIDE" styleClass="board_square_lt" width="100.0" />
+                                <Rectangle fx:id="pos15" height="100.0" layoutX="400.0" onMouseClicked="#moveCurrentChecker" onMouseEntered="#selectNewTile" onMouseExited="#removeTileSelection" opacity="0.0" width="100.0" />
                                 <Rectangle fx:id="sq5_4" arcHeight="5.0" arcWidth="5.0" fill="RED" height="100.0" layoutX="500.0" stroke="BLACK" strokeType="INSIDE" styleClass="board_square" width="100.0" />
-                                <Rectangle fx:id="pos16" arcHeight="5.0" arcWidth="5.0" height="100.0" layoutX="600.0" onMouseClicked="#moveCurrentChecker" onMouseEntered="#selectNewTile" onMouseExited="#removeTileSelection" stroke="BLACK" strokeType="INSIDE" styleClass="board_square_lt" width="100.0" />
+                                <Rectangle fx:id="pos16" height="100.0" layoutX="600.0" onMouseClicked="#moveCurrentChecker" onMouseEntered="#selectNewTile" onMouseExited="#removeTileSelection" opacity="0.0" width="100.0" />
                                 <Rectangle fx:id="sq7_4" arcHeight="5.0" arcWidth="5.0" fill="RED" height="100.0" layoutX="700.0" stroke="BLACK" strokeType="INSIDE" styleClass="board_square" width="100.0" />
                             </children>
                         </Pane>
-                        <Pane fx:id="row3" layoutY="400.0">
+                        <Pane fx:id="row4" layoutY="400.0" pickOnBounds="false">
                             <children>
-                                <Rectangle fx:id="sq0_3" arcHeight="5.0" arcWidth="5.0" fill="RED" height="100.0" stroke="BLACK" strokeType="INSIDE" styleClass="board_square" width="100.0" />
-                                <Rectangle fx:id="pos17" arcHeight="5.0" arcWidth="5.0" height="100.0" layoutX="100.0" onMouseClicked="#moveCurrentChecker" onMouseEntered="#selectNewTile" onMouseExited="#removeTileSelection" stroke="BLACK" strokeType="INSIDE" styleClass="board_square_lt" width="100.0" />
-                                <Rectangle fx:id="sq2_3" arcHeight="5.0" arcWidth="5.0" fill="RED" height="100.0" layoutX="200.0" stroke="BLACK" strokeType="INSIDE" styleClass="board_square" width="100.0" />
-                                <Rectangle fx:id="pos18" arcHeight="5.0" arcWidth="5.0" height="100.0" layoutX="300.0" onMouseClicked="#moveCurrentChecker" onMouseEntered="#selectNewTile" onMouseExited="#removeTileSelection" stroke="BLACK" strokeType="INSIDE" styleClass="board_square_lt" width="100.0" />
-                                <Rectangle fx:id="sq4_3" arcHeight="5.0" arcWidth="5.0" fill="RED" height="100.0" layoutX="400.0" stroke="BLACK" strokeType="INSIDE" styleClass="board_square" width="100.0" />
-                                <Rectangle fx:id="pos19" arcHeight="5.0" arcWidth="5.0" height="100.0" layoutX="500.0" onMouseClicked="#moveCurrentChecker" onMouseEntered="#selectNewTile" onMouseExited="#removeTileSelection" stroke="BLACK" strokeType="INSIDE" styleClass="board_square_lt" width="100.0" />
-                                <Rectangle fx:id="sq6_3" arcHeight="5.0" arcWidth="5.0" fill="RED" height="100.0" layoutX="600.0" stroke="BLACK" strokeType="INSIDE" styleClass="board_square" width="100.0" />
-                                <Rectangle fx:id="pos20" arcHeight="5.0" arcWidth="5.0" height="100.0" layoutX="700.0" onMouseClicked="#moveCurrentChecker" onMouseEntered="#selectNewTile" onMouseExited="#removeTileSelection" stroke="BLACK" strokeType="INSIDE" styleClass="board_square_lt" width="100.0" />
+                                <Rectangle fx:id="sq0_3" fill="RED" height="100.0" stroke="BLACK" strokeType="INSIDE" styleClass="board_square" width="100.0" />
+                                <Rectangle fx:id="pos17" height="100.0" layoutX="100.0" onMouseClicked="#moveCurrentChecker" onMouseEntered="#selectNewTile" onMouseExited="#removeTileSelection" opacity="0.0" width="100.0" />
+                                <Rectangle fx:id="sq2_3" fill="RED" height="100.0" layoutX="200.0" stroke="BLACK" strokeType="INSIDE" styleClass="board_square" width="100.0" />
+                                <Rectangle fx:id="pos18" height="100.0" layoutX="300.0" onMouseClicked="#moveCurrentChecker" onMouseEntered="#selectNewTile" onMouseExited="#removeTileSelection" opacity="0.0" width="100.0" />
+                                <Rectangle fx:id="sq4_3" fill="RED" height="100.0" layoutX="400.0" stroke="BLACK" strokeType="INSIDE" styleClass="board_square" width="100.0" />
+                                <Rectangle fx:id="pos19" height="100.0" layoutX="500.0" onMouseClicked="#moveCurrentChecker" onMouseEntered="#selectNewTile" onMouseExited="#removeTileSelection" opacity="0.0" width="100.0" />
+                                <Rectangle fx:id="sq6_3" fill="RED" height="100.0" layoutX="600.0" stroke="BLACK" strokeType="INSIDE" styleClass="board_square" width="100.0" />
+                                <Rectangle fx:id="pos20" height="100.0" layoutX="700.0" onMouseClicked="#moveCurrentChecker" onMouseEntered="#selectNewTile" onMouseExited="#removeTileSelection" opacity="0.0" width="100.0" />
                             </children>
                         </Pane>
-                        <Pane fx:id="row2" layoutY="500.0">
+                        <Pane fx:id="row5" layoutY="500.0" pickOnBounds="false">
                             <children>
-                                <Rectangle fx:id="pos21" arcHeight="5.0" arcWidth="5.0" height="100.0" onMouseClicked="#moveCurrentChecker" onMouseEntered="#selectNewTile" onMouseExited="#removeTileSelection" stroke="BLACK" strokeType="INSIDE" styleClass="board_square_lt" width="100.0" />
-                                <Rectangle fx:id="sq1_2" arcHeight="5.0" arcWidth="5.0" fill="RED" height="100.0" layoutX="100.0" stroke="BLACK" strokeType="INSIDE" styleClass="board_square" width="100.0" />
-                                <Rectangle fx:id="pos22" arcHeight="5.0" arcWidth="5.0" height="100.0" layoutX="200.0" onMouseClicked="#moveCurrentChecker" onMouseEntered="#selectNewTile" onMouseExited="#removeTileSelection" stroke="BLACK" strokeType="INSIDE" styleClass="board_square_lt" width="100.0" />
-                                <Rectangle fx:id="sq3_2" arcHeight="5.0" arcWidth="5.0" fill="RED" height="100.0" layoutX="300.0" stroke="BLACK" strokeType="INSIDE" styleClass="board_square" width="100.0" />
-                                <Rectangle fx:id="pos23" arcHeight="5.0" arcWidth="5.0" height="100.0" layoutX="400.0" onMouseClicked="#moveCurrentChecker" onMouseEntered="#selectNewTile" onMouseExited="#removeTileSelection" stroke="BLACK" strokeType="INSIDE" styleClass="board_square_lt" width="100.0" />
-                                <Rectangle fx:id="sq5_2" arcHeight="5.0" arcWidth="5.0" fill="RED" height="100.0" layoutX="500.0" stroke="BLACK" strokeType="INSIDE" styleClass="board_square" width="100.0" />
-                                <Rectangle fx:id="pos24" arcHeight="5.0" arcWidth="5.0" height="100.0" layoutX="600.0" onMouseClicked="#moveCurrentChecker" onMouseEntered="#selectNewTile" onMouseExited="#removeTileSelection" stroke="BLACK" strokeType="INSIDE" styleClass="board_square_lt" width="100.0" />
-                                <Rectangle fx:id="sq7_2" arcHeight="5.0" arcWidth="5.0" fill="RED" height="100.0" layoutX="700.0" stroke="BLACK" strokeType="INSIDE" styleClass="board_square" width="100.0" />
+                                <Rectangle fx:id="pos21" height="100.0" onMouseClicked="#moveCurrentChecker" onMouseEntered="#selectNewTile" onMouseExited="#removeTileSelection" opacity="0.0" width="100.0" />
                                 <Circle fx:id="user_1" centerX="10.0" centerY="10.0" fill="RED" layoutX="40.0" layoutY="40.0" onMouseClicked="#selectChecker" onMouseEntered="#highlightSelected" onMouseExited="#deHighlightSelected" radius="40.0" stroke="BLACK" strokeType="INSIDE" />
+                                <Rectangle fx:id="sq1_2" fill="RED" height="100.0" layoutX="100.0" stroke="BLACK" strokeType="INSIDE" styleClass="board_square" width="100.0" />
+                                <Rectangle fx:id="pos22" height="100.0" layoutX="200.0" onMouseClicked="#moveCurrentChecker" onMouseEntered="#selectNewTile" onMouseExited="#removeTileSelection" opacity="0.0" width="100.0" />
+                                <Rectangle fx:id="sq3_2" fill="RED" height="100.0" layoutX="300.0" stroke="BLACK" strokeType="INSIDE" styleClass="board_square" width="100.0" />
+                                <Rectangle fx:id="pos23" height="100.0" layoutX="400.0" onMouseClicked="#moveCurrentChecker" onMouseEntered="#selectNewTile" onMouseExited="#removeTileSelection" opacity="0.0" width="100.0" />
+                                <Rectangle fx:id="sq5_2" fill="RED" height="100.0" layoutX="500.0" stroke="BLACK" strokeType="INSIDE" styleClass="board_square" width="100.0" />
+                                <Rectangle fx:id="pos24" height="100.0" layoutX="600.0" onMouseClicked="#moveCurrentChecker" onMouseEntered="#selectNewTile" onMouseExited="#removeTileSelection" opacity="0.0" width="100.0" />
+                                <Rectangle fx:id="sq7_2" fill="RED" height="100.0" layoutX="700.0" stroke="BLACK" strokeType="INSIDE" styleClass="board_square" width="100.0" />
                                 <Circle fx:id="user_2" centerX="10.0" centerY="10.0" fill="RED" layoutX="240.0" layoutY="40.0" onMouseClicked="#selectChecker" onMouseEntered="#highlightSelected" onMouseExited="#deHighlightSelected" radius="40.0" stroke="BLACK" strokeType="INSIDE" />
                                 <Circle fx:id="user_3" centerX="10.0" centerY="10.0" fill="RED" layoutX="440.0" layoutY="40.0" onMouseClicked="#selectChecker" onMouseEntered="#highlightSelected" onMouseExited="#deHighlightSelected" radius="40.0" stroke="BLACK" strokeType="INSIDE" />
                                 <Circle fx:id="user_4" centerX="10.0" centerY="10.0" fill="RED" layoutX="640.0" layoutY="40.0" onMouseClicked="#selectChecker" onMouseEntered="#highlightSelected" onMouseExited="#deHighlightSelected" radius="40.0" stroke="BLACK" strokeType="INSIDE" />
                             </children>
                         </Pane>
-                        <Pane fx:id="row1" layoutY="600.0">
+                        <Pane fx:id="row6" layoutY="600.0" pickOnBounds="false">
                             <children>
-                                <Rectangle fx:id="sq0_1" arcHeight="5.0" arcWidth="5.0" fill="RED" height="100.0" stroke="BLACK" strokeType="INSIDE" styleClass="board_square" width="100.0" />
-                                <Rectangle fx:id="pos25" arcHeight="5.0" arcWidth="5.0" height="100.0" layoutX="100.0" onMouseClicked="#moveCurrentChecker" onMouseEntered="#selectNewTile" onMouseExited="#removeTileSelection" stroke="BLACK" strokeType="INSIDE" styleClass="board_square_lt" width="100.0" />
-                                <Rectangle fx:id="sq2_1" arcHeight="5.0" arcWidth="5.0" fill="RED" height="100.0" layoutX="200.0" stroke="BLACK" strokeType="INSIDE" styleClass="board_square" width="100.0" />
-                                <Rectangle fx:id="pos26" arcHeight="5.0" arcWidth="5.0" height="100.0" layoutX="300.0" onMouseClicked="#moveCurrentChecker" onMouseEntered="#selectNewTile" onMouseExited="#removeTileSelection" stroke="BLACK" strokeType="INSIDE" styleClass="board_square_lt" width="100.0" />
-                                <Rectangle fx:id="sq4_1" arcHeight="5.0" arcWidth="5.0" fill="RED" height="100.0" layoutX="400.0" stroke="BLACK" strokeType="INSIDE" styleClass="board_square" width="100.0" />
-                                <Rectangle fx:id="pos27" arcHeight="5.0" arcWidth="5.0" height="100.0" layoutX="500.0" onMouseClicked="#moveCurrentChecker" onMouseEntered="#selectNewTile" onMouseExited="#removeTileSelection" stroke="BLACK" strokeType="INSIDE" styleClass="board_square_lt" width="100.0" />
-                                <Rectangle fx:id="sq6_1" arcHeight="5.0" arcWidth="5.0" fill="RED" height="100.0" layoutX="600.0" stroke="BLACK" strokeType="INSIDE" styleClass="board_square" width="100.0" />
-                                <Rectangle fx:id="pos28" arcHeight="5.0" arcWidth="5.0" height="100.0" layoutX="700.0" onMouseClicked="#moveCurrentChecker" onMouseEntered="#selectNewTile" onMouseExited="#removeTileSelection" stroke="BLACK" strokeType="INSIDE" styleClass="board_square_lt" width="100.0" />
+                                <Rectangle fx:id="sq0_1" fill="RED" height="100.0" stroke="BLACK" strokeType="INSIDE" styleClass="board_square" width="100.0" />
+                                <Rectangle fx:id="pos25" height="100.0" layoutX="100.0" onMouseClicked="#moveCurrentChecker" onMouseEntered="#selectNewTile" onMouseExited="#removeTileSelection" opacity="0.0" width="100.0" />
                                 <Circle fx:id="user_5" centerX="10.0" centerY="10.0" fill="RED" layoutX="140.0" layoutY="40.0" onMouseClicked="#selectChecker" onMouseEntered="#highlightSelected" onMouseExited="#deHighlightSelected" radius="40.0" stroke="BLACK" strokeType="INSIDE" />
+                                <Rectangle fx:id="sq2_1" fill="RED" height="100.0" layoutX="200.0" stroke="BLACK" strokeType="INSIDE" styleClass="board_square" width="100.0" />
+                                <Rectangle fx:id="pos26" height="100.0" layoutX="300.0" onMouseClicked="#moveCurrentChecker" onMouseEntered="#selectNewTile" onMouseExited="#removeTileSelection" opacity="0.0" width="100.0" />
+                                <Rectangle fx:id="sq4_1" fill="RED" height="100.0" layoutX="400.0" stroke="BLACK" strokeType="INSIDE" styleClass="board_square" width="100.0" />
+                                <Rectangle fx:id="pos27" height="100.0" layoutX="500.0" onMouseClicked="#moveCurrentChecker" onMouseEntered="#selectNewTile" onMouseExited="#removeTileSelection" opacity="0.0" width="100.0" />
+                                <Rectangle fx:id="sq6_1" fill="RED" height="100.0" layoutX="600.0" stroke="BLACK" strokeType="INSIDE" styleClass="board_square" width="100.0" />
+                                <Rectangle fx:id="pos28" height="100.0" layoutX="700.0" onMouseClicked="#moveCurrentChecker" onMouseEntered="#selectNewTile" onMouseExited="#removeTileSelection" opacity="0.0" width="100.0" />
                                 <Circle fx:id="user_6" centerX="10.0" centerY="10.0" fill="RED" layoutX="340.0" layoutY="40.0" onMouseClicked="#selectChecker" onMouseEntered="#highlightSelected" onMouseExited="#deHighlightSelected" radius="40.0" stroke="BLACK" strokeType="INSIDE" />
                                 <Circle fx:id="user_7" centerX="10.0" centerY="10.0" fill="RED" layoutX="540.0" layoutY="40.0" onMouseClicked="#selectChecker" onMouseEntered="#highlightSelected" onMouseExited="#deHighlightSelected" radius="40.0" stroke="BLACK" strokeType="INSIDE" />
                                 <Circle fx:id="user_8" centerX="10.0" centerY="10.0" fill="RED" layoutX="740.0" layoutY="40.0" onMouseClicked="#selectChecker" onMouseEntered="#highlightSelected" onMouseExited="#deHighlightSelected" radius="40.0" stroke="BLACK" strokeType="INSIDE" />
                             </children>
                         </Pane>
-                        <Pane fx:id="row0" layoutY="700.0">
+                        <Pane fx:id="row7" layoutY="700.0" pickOnBounds="false">
                             <children>
-                                <Rectangle fx:id="pos29" arcHeight="5.0" arcWidth="5.0" height="100.0" onMouseClicked="#moveCurrentChecker" onMouseEntered="#selectNewTile" onMouseExited="#removeTileSelection" stroke="BLACK" strokeType="INSIDE" styleClass="board_square_lt" width="100.0" />
-                                <Rectangle fx:id="sq1_0" arcHeight="5.0" arcWidth="5.0" fill="RED" height="100.0" layoutX="100.0" stroke="BLACK" strokeType="INSIDE" styleClass="board_square" width="100.0" />
-                                <Rectangle fx:id="pos30" arcHeight="5.0" arcWidth="5.0" height="100.0" layoutX="200.0" onMouseClicked="#moveCurrentChecker" onMouseEntered="#selectNewTile" onMouseExited="#removeTileSelection" stroke="BLACK" strokeType="INSIDE" styleClass="board_square_lt" width="100.0" />
-                                <Rectangle fx:id="sq3_0" arcHeight="5.0" arcWidth="5.0" fill="RED" height="100.0" layoutX="300.0" stroke="BLACK" strokeType="INSIDE" styleClass="board_square" width="100.0" />
-                                <Rectangle fx:id="pos31" arcHeight="5.0" arcWidth="5.0" height="100.0" layoutX="400.0" onMouseClicked="#moveCurrentChecker" onMouseEntered="#selectNewTile" onMouseExited="#removeTileSelection" stroke="BLACK" strokeType="INSIDE" styleClass="board_square_lt" width="100.0" />
-                                <Rectangle fx:id="sq5_0" arcHeight="5.0" arcWidth="5.0" fill="RED" height="100.0" layoutX="500.0" stroke="BLACK" strokeType="INSIDE" styleClass="board_square" width="100.0" />
-                                <Rectangle fx:id="pos32" arcHeight="5.0" arcWidth="5.0" height="100.0" layoutX="600.0" onMouseClicked="#moveCurrentChecker" onMouseEntered="#selectNewTile" onMouseExited="#removeTileSelection" stroke="BLACK" strokeType="INSIDE" styleClass="board_square_lt" width="100.0" />
-                                <Rectangle fx:id="sq7_0" arcHeight="5.0" arcWidth="5.0" fill="RED" height="100.0" layoutX="700.0" stroke="BLACK" strokeType="INSIDE" styleClass="board_square" width="100.0" />
+                                <Rectangle fx:id="pos29" height="100.0" onMouseClicked="#moveCurrentChecker" onMouseEntered="#selectNewTile" onMouseExited="#removeTileSelection" opacity="0.0" width="100.0" />
+                                <Rectangle fx:id="sq1_0" fill="RED" height="100.0" layoutX="100.0" stroke="BLACK" strokeType="INSIDE" styleClass="board_square" width="100.0" />
+                                <Rectangle fx:id="pos30" height="100.0" layoutX="200.0" onMouseClicked="#moveCurrentChecker" onMouseEntered="#selectNewTile" onMouseExited="#removeTileSelection" opacity="0.0" width="100.0" />
+                                <Rectangle fx:id="sq3_0" fill="RED" height="100.0" layoutX="300.0" stroke="BLACK" strokeType="INSIDE" styleClass="board_square" width="100.0" />
+                                <Rectangle fx:id="pos31" height="100.0" layoutX="400.0" onMouseClicked="#moveCurrentChecker" onMouseEntered="#selectNewTile" onMouseExited="#removeTileSelection" opacity="0.0" width="100.0" />
+                                <Rectangle fx:id="sq5_0" fill="RED" height="100.0" layoutX="500.0" stroke="BLACK" strokeType="INSIDE" styleClass="board_square" width="100.0" />
+                                <Rectangle fx:id="pos32" height="100.0" layoutX="600.0" onMouseClicked="#moveCurrentChecker" onMouseEntered="#selectNewTile" onMouseExited="#removeTileSelection" opacity="0.0" width="100.0" />
+                                <Rectangle fx:id="sq7_0" fill="RED" height="100.0" layoutX="700.0" stroke="BLACK" strokeType="INSIDE" styleClass="board_square" width="100.0" />
                                 <Circle fx:id="user_12" centerX="10.0" centerY="10.0" fill="RED" layoutX="640.0" layoutY="40.0" onMouseClicked="#selectChecker" onMouseEntered="#highlightSelected" onMouseExited="#deHighlightSelected" radius="40.0" stroke="BLACK" strokeType="INSIDE" />
                                 <Circle fx:id="user_11" centerX="10.0" centerY="10.0" fill="RED" layoutX="440.0" layoutY="40.0" onMouseClicked="#selectChecker" onMouseEntered="#highlightSelected" onMouseExited="#deHighlightSelected" radius="40.0" stroke="BLACK" strokeType="INSIDE" />
                                 <Circle fx:id="user_10" centerX="10.0" centerY="10.0" fill="RED" layoutX="240.0" layoutY="40.0" onMouseClicked="#selectChecker" onMouseEntered="#highlightSelected" onMouseExited="#deHighlightSelected" radius="40.0" stroke="BLACK" strokeType="INSIDE" />

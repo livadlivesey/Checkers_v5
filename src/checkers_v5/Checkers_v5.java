@@ -19,8 +19,6 @@ import javafx.stage.Stage;
 import checkers_v5.Checkers_controller;
 import javafx.scene.layout.AnchorPane;
 
-import static java.lang.System.*;
-
 /**
  *
  * @author liv
@@ -35,30 +33,18 @@ public class Checkers_v5 extends Application {
     
     @Override
     public void start(Stage stage) throws Exception {
-        //FXMLLoader loader = new FXMLLoader();
-        //userController = new Checkers_controller();
-        //FXMLLoader loader = new FXMLLoader();
-        //loader.setController(userController);
-        //loader.setLocation(getClass().getResource("Checkers_FXML.fxml"));
-        
         loader = new FXMLLoader(getClass().getResource("Checkers_FXML.fxml"));
         
         userController = loader.getController();
         Parent root = loader.load();
-
-        
-        
-          
-        //game = new Game(userController.user_checkers, userController.comp_checkers, userController.blackTiles);
-        //userCheckers = game.userCheckers;
-        //Bindings.bindBidirectional(userCheckers, userController.user_checkers);
         
         Scene scene = new Scene(root);
-        //scene.addEventFilter(MouseEvent.ANY, e -> System.out.println( e));
+        //scene.addEventFilter(MouseEvent.MOUSE_ENTERED, e -> System.out.println( e));
         stage.setTitle("Checkers");
         
         stage.setScene(scene);
         stage.show();
+
     }
 
     /**

@@ -8,7 +8,7 @@
   </information>
   <resources>
     <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
-    <jar href="Checkers_v5.jar" size="26171" download="eager" />
+    <jar href="Checkers_v5.jar" size="24712" download="eager" />
     <jar href="lib/javafx-swt.jar" size="37117" download="eager" />
     <jar href="lib/javafx.base.jar" size="745857" download="eager" />
     <jar href="lib/javafx.controls.jar" size="2545274" download="eager" />
@@ -18,6 +18,6 @@
     <jar href="lib/javafx.swing.jar" size="88804" download="eager" />
     <jar href="lib/javafx.web.jar" size="720360" download="eager" />
   </resources>
-  <jfx:javafx-desc  width="800" height="600" main-class="Initializing view, please wait ..."  name="Checkers_v5" />
+  <jfx:javafx-desc  width="800" height="600" main-class="checkers_v5.Checkers_v5"  name="Checkers_v5" />
   <update check="always"/>
 </jnlp>

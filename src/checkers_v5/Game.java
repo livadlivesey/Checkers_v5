@@ -24,7 +24,7 @@ public class Game {
     List<MovesAndScores> successorEvaluations;
 
     //To reference current objects
-    Checker currentChecker;
+    Checker selectedChecker;
     Checker capturedChecker;
     Tile currentTile;
     Tile selectedTile;
@@ -46,7 +46,6 @@ public class Game {
         this.gameState = gameState;
         setDifficulty(difficulty);
     }
-
     /**
      * Updates the state representation with the current move
      *
@@ -54,81 +53,13 @@ public class Game {
      * @param oldPosition The original checker position
      * @param newPosition The new position
      */
-    public void moveChecker(Checker checker, int oldPosition, int newPosition) {
-        checker.move(newPosition);
-        gameState[newPosition - 1].setChecker(checker);
-        gameState[oldPosition - 1].removeChecker();
-
-    }
-
     public void move(Checker checker, Tile newTile, Tile[] state) {
-        int oldPos = checker.position;
-        int newPos = newTile.position;
+        //System.out.println("MOVING: "+checker.toString());
+        int oldPos = checker.getPosition();
+        int newPos = newTile.getPosition();
         checker.move(newPos);
         state[newPos - 1].setChecker(checker);
         state[oldPos - 1].removeChecker();
-
-    }
-
-    /**
-     * Gets the legal moves for the given tile For each tile which is
-     * surrounding, checks if the move is legal
-     *
-     * @param current
-     * @return List of tile objects which can be moved to
-     */
-    public List<Tile> getLegalMoves(Checker current) {
-
-        List<Tile> legalMoves = new ArrayList<>();
-        List<Integer> neighbours = current.getNeighbouringPositions();
-        //System.out.println(neighbours);
-        for (int i : neighbours) {
-            Tile tile = gameState[i - 1]; //Use -1 as the stored positions are in checker notation, and array starts from index 0
-            if (current.getOwner().equals(currentPlayer) && tile.hasChecker() == false) {
-                legalMoves.add(tile);
-
-            }
-            if (tile.hasChecker() == true && !tile.getChecker().getOwner().equals(current.getOwner())) {
-                int newRow = 0;
-                int newCol = 0;
-                //Hashtable<Integer, Integer> positions = new Hashtable<>();
-                if (current.getRow() + 1 == tile.getRow() && current.getCol() + 1 == tile.getCol()) {
-                    newRow = tile.getRow() + 1;
-                    newCol = tile.getCol() + 1;
-                    //positions.put(newRow, newCol);
-
-                } else if (current.getRow() + 1 == tile.getRow() && current.getCol() - 1 == tile.getCol()) {
-                    newRow = tile.getRow() + 1;
-                    newCol = tile.getCol() - 1;
-                    //positions.put(newRow, newCol);
-
-                } else if (current.getRow() - 1 == tile.getRow() && current.getCol() + 1 == tile.getCol()) {
-                    newRow = tile.getRow() - 1;
-                    newCol = tile.getCol() + 1;
-                    //positions.put(newRow, newCol);
-
-                } else if (current.getRow() - 1 == tile.getRow() && current.getCol() - 1 == tile.getCol()) {
-                    newRow = tile.getRow() - 1;
-                    newCol = tile.getCol() - 1;
-                    //positions.put(newRow, newCol);
-                }
-
-                for (Tile t : gameState) {
-                    //System.out.println("ROW: " + t.getRow());
-                    //System.out.println("COL: " + t.getCol());
-
-                    if (t.getRow() == newRow && t.getCol() == newCol && t.hasChecker() == false) {
-
-                        legalMoves.add(t);
-                        //System.out.println("Legal tile: " + t.toString());
-                    }
-                    //Add alert if no possible positions
-                }
-            }
-        }
-
-        //System.out.println(legalMoves);
-        return legalMoves;
     }
 
     /**
@@ -139,56 +70,67 @@ public class Game {
      * @param state
      * @return List of tile objects which can be moved to
      */
-    public List<Move> getLegalMoves2(Checker current, Tile[] state) {
-
+    public List<Move> getLegalMoves(Checker current, Tile[] state) {
+        //Initialise list to hold legal moves
         List<Move> legalMoves = new ArrayList<>();
+        //Get the neighbouring positions
         List<Integer> neighbours = current.getNeighbouringPositions();
-        //System.out.println(neighbours);
         for (int i : neighbours) {
             Tile tile = state[i - 1]; //Use -1 as the stored positions are in checker notation, and array starts from index 0
-            if (tile.hasChecker() == false) { //current.getOwner().equals(player) &&
+            if (tile.hasChecker() == false && current.getOwner().equals(currentPlayer) ) { //current.getOwner().equals(player) &&
                 legalMoves.add(new Move(current, tile));
             }
             if (tile.hasChecker() == true && !tile.getChecker().getOwner().equals(current.getOwner())) {
+                // If the tile is occupied by the opponent's checker, intialise newRow, newCol
                 int newRow = 0;
                 int newCol = 0;
-
+                
                 if (current.getRow() + 1 == tile.getRow() && current.getCol() + 1 == tile.getCol()) {
+                    // If the opponent's checker is bottom right diagonal
                     newRow = tile.getRow() + 1;
                     newCol = tile.getCol() + 1;
-
                 } else if (current.getRow() + 1 == tile.getRow() && current.getCol() - 1 == tile.getCol()) {
+                    // If the opponent's checker is bottom left diagonal
                     newRow = tile.getRow() + 1;
                     newCol = tile.getCol() - 1;
-
                 } else if (current.getRow() - 1 == tile.getRow() && current.getCol() + 1 == tile.getCol()) {
+                    // If the opponent's checker is top right diagonal
                     newRow = tile.getRow() - 1;
                     newCol = tile.getCol() + 1;
-
                 } else if (current.getRow() - 1 == tile.getRow() && current.getCol() - 1 == tile.getCol()) {
+                    // If the opponent's checker is top left diagonal
                     newRow = tile.getRow() - 1;
                     newCol = tile.getCol() - 1;
                 }
-
                 for (Tile t : state) {
                     if (t.getRow() == newRow && t.getCol() == newCol && t.hasChecker() == false) {
-                        legalMoves.add(new Move(current, t));
-                    }
+                        //Iterate through the tiles to find the tile with the matching row and column values, to be added as a potential move
+                        Move m = new Move(current, t);
+                        //Set as a capturing move
+                        m.setCapturingMove();
+                        int capturedPos = tile.getPosition();
 
+                        m.setCapturedChecker(gameState[capturedPos-1].getChecker());
+                        System.out.println(m);
+                        legalMoves.add(m);   
+                    }
                 }
             }
         }
-
-        //System.out.println(legalMoves);
         return legalMoves;
     }
 
+    /**
+     *
+     * @param state
+     * @return
+     */
     public List<Move> getAllLegalMoves(Tile[] state) {
         List<Move> allMoves = new ArrayList<>();
         for (Tile t : state) {
             if (t.hasChecker()) {
                 Checker c = t.getChecker();
-                allMoves.addAll(getLegalMoves2(c, state));
+                allMoves.addAll(getLegalMoves(c, state));
             }
 
         }
@@ -199,9 +141,13 @@ public class Game {
         return this.currentPlayer;
     }
 
+    /**
+     *
+     * @param checker
+     */
     public void removeChecker(Checker checker) {
         for (Tile tile : gameState) {
-            if (tile.getChecker().equals(checker)) {
+            if (tile.hasChecker() && tile.getChecker().equals(checker)) {
                 tile.removeChecker();
             }
         }
@@ -237,40 +183,6 @@ public class Game {
         return allCheckers;
     }
 
-    public boolean isCapturingMove(Checker checker, Tile tile) {
-        boolean isCapture = false;
-        if (checker.getRow() == tile.getRow() + 2 || checker.getRow() == tile.getRow() - 2) {
-            isCapture = true;
-        }
-        return isCapture;
-    }
-
-    public Checker getCapturedChecker(Checker checker, Tile tile) {
-        Checker captured = null;
-        int newRow = 0;
-        int newCol = 0;
-        if (checker.getRow() == tile.getRow() + 2) {
-            newRow = checker.getRow() + 1;
-        } else if (checker.getRow() == tile.getRow() + 2) {
-            newRow = checker.getRow() - 1;
-        }
-        if (checker.getCol() == tile.getCol() - 2) {
-            newCol = checker.getCol() - 1;
-
-        } else if (checker.getCol() == tile.getRow() + 2) {
-            newCol = checker.getCol() + 1;
-        }
-
-        List<Checker> checkers = getCheckers();
-        for (Checker c : checkers) {
-            if (c.getRow() == newRow && c.getCol() == newCol) {
-                captured = c;
-            }
-        }
-        return captured;
-
-    }
-
     /**
      * Changes the string representing the current player to alternate turns
      *
@@ -290,9 +202,10 @@ public class Game {
         pCount = 0;
         successorEvaluations = new ArrayList<>();
         MinimaxState = cloneState(gameState);
-        System.out.print("Start state: " + Arrays.toString(MinimaxState));
-        minimaxAB(depthLimit, currentPlayer, Integer.MIN_VALUE, Integer.MAX_VALUE, MinimaxState);
-        System.out.print("Final state: " + Arrays.toString(MinimaxState));
+        currentPlayer = "Computer";
+        //System.out.print("Start state: " + Arrays.toString(MinimaxState));
+        minimaxAB2(depthLimit, currentPlayer, Integer.MIN_VALUE, Integer.MAX_VALUE, MinimaxState);
+        //System.out.print("Final state: " + Arrays.toString(MinimaxState));
     }
 
     public Tile[] cloneState(Tile[] currentState) {
@@ -311,21 +224,99 @@ public class Game {
      *
      * @return
      */
-    public Move getBestMove() {
+    public Move getBestMove(String currentPlayer) {
         int max = -10000;
         int best = -1;
+        Move tempBest = null;
         System.out.println("Successor Evaluations Size: " + successorEvaluations.size());
         for (int i = 0; i < successorEvaluations.size(); i++) {
-            if (max <= successorEvaluations.get(i).score) {
+            if (max <= successorEvaluations.get(i).score && currentPlayer.equals(successorEvaluations.get(i).player)) {
                 max = successorEvaluations.get(i).score;
                 System.out.print("Max: " + max);
                 best = i;
+                tempBest = successorEvaluations.get(i).getMove();
             }
         }
         //System.out.println("Successor evaluations: " + successorEvaluations.toString());
         //System.out.println("Best: " + best);
-        return successorEvaluations.get(best).getMove();
+        return tempBest;
+        //return successorEvaluations.get(best).getMove();
     }
+    
+     public int minimaxAB2(int depth, String currentPlayer, int alpha, int beta, Tile[] state) {
+        Move tempBestMove = null;
+        int bestScore;
+        if (currentPlayer.equals("User")) {
+            bestScore = Integer.MAX_VALUE;
+        } else {
+            bestScore = Integer.MIN_VALUE;
+        }
+        List<Move> legalMoves = getAllLegalMoves(state);
+        if (depth == 0 || legalMoves.isEmpty()) {
+            //Check if the tree has been traversed to specified level, or node is terminal node
+            seCount++;
+            //successorEvaluations.add(new MovesAndScores(bestScore, tempBestMove, currentPlayer));
+            return calc_heuristic(state); // return static evaluation of node
+
+        }
+        if (currentPlayer.equals("User")) {
+            //int maxScore = Integer.MIN_VALUE;      // User is minimizing player   
+            Tile[] tempState = cloneState(state);
+            List<Move> userMoves;
+            userMoves = getUserMoves(legalMoves); // Generate available moves for player
+            for (Move move : userMoves) {
+                //System.out.println("move.checker: "+move.checker);
+                Checker moving = move.getChecker().cloneChecker();
+                //System.out.println("moving: "+moving);
+                //System.out.println("move.newTile: "+move.newTile);
+                Tile newTile = tempState[move.newTile.getPosition()-1];
+                //System.out.println("newTile: "+newTile);
+                deCount++;
+
+                move(moving, newTile, tempState); //place piece at first available position
+                int score = minimaxAB(depth - 1, "Computer", alpha, beta, tempState); // start recursion
+                bestScore = Math.min(bestScore, score); //get best score
+
+                if (beta > bestScore) {
+                    beta = bestScore;
+                    tempBestMove = move; 
+                    //successorEvaluations.add(new MovesAndScores(score, tempBestMove, "User"));// save the best move temporarily
+                }
+                //Perform pruning if appropriate
+                if (beta <= alpha) {
+                    pCount++;
+                    break;
+                }
+            }
+            this.bestMove = tempBestMove;
+            return bestScore;
+        } else {
+            //int minScore = Integer.MAX_VALUE; //Computer is maximizing player
+            Tile[] tempState = cloneState(state);
+            List<Move> compMoves = getCompMoves(legalMoves);
+            for (Move move : compMoves) {
+                deCount++; 
+                Checker moving = move.checker.cloneChecker();
+                Tile newTile = tempState[move.newTile.getPosition()-1];           
+                move(moving, newTile, tempState);
+                int score = minimaxAB(depth - 1, "User", alpha, beta, tempState);
+                bestScore = Math.max(score, bestScore);
+
+                if (alpha < bestScore) {
+                    alpha = bestScore;
+                    tempBestMove = new Move(move.getChecker(), move.getTile());
+                    //successorEvaluations.add(new MovesAndScores(score, tempBestMove, "Computer"));
+                }
+                if (beta <= alpha) {
+                    pCount++;
+                    break;
+                }
+            }
+            this.bestMove = tempBestMove;
+            return bestScore;
+        }
+    }
+
 
     /**
      * Minimax algorithm with alpha beta pruning
@@ -338,102 +329,72 @@ public class Game {
      * @return
      */
     public int minimaxAB(int depth, String currentPlayer, int alpha, int beta, Tile[] state) {
+        Move tempBestMove = null;
+        int max_value = Integer.MIN_VALUE;
+        int min_value = Integer.MAX_VALUE;
+        
+        alpha= Math.max(alpha, max_value);
+        beta = Math.min(beta, min_value);
         List<Move> legalMoves = getAllLegalMoves(state);
         if (depth == 0 || legalMoves.isEmpty()) {
             seCount++;
             //successorEvaluations.add(new MovesAndScores(bestScore, tempBestMove));
             return calc_heuristic(state); // return static evaluation of node
 
-        }        
-
-        Move tempBestMove = null;
-        int bestScore;
-        if (currentPlayer.equals("User")) {
-            bestScore = Integer.MAX_VALUE;
-        } else {
-            bestScore = Integer.MIN_VALUE;
         }
-
-
-        if (currentPlayer.equals("User")) {
-            //int maxScore = Integer.MIN_VALUE;      // User is minimizing player   
-            bestScore = Integer.MAX_VALUE;
+        //store all moves onto state
+        
+        if (currentPlayer.equals("User")) { // User is minimizing player
             List<Move> userMoves;
             userMoves = getUserMoves(legalMoves); // Generate available moves for player
             for (Move move : userMoves) {
-
+                Tile[] tempState = cloneState(state);
                 deCount++;
-                //state = cloneState(gameState);
+                Checker moving = tempState[move.checker.getPosition()-1].getChecker();
+                Tile newTile = tempState[move.newTile.getPosition()-1];
                 int originalPos = move.checker.getPosition(); // Get position of checker before move for undo move later
-                Tile originalTile = state[originalPos - 1];
-                move(move.checker, move.newTile, state); //place piece at first available position
-                int score = minimaxAB(depth - 1, "Computer", alpha, beta, state); // start recursion
-
-                bestScore = Math.min(bestScore, score); //get best score
-
-                //alpha = Math.max(alpha, bestScore);
-                if (alpha < bestScore) {
-                    alpha = bestScore;
-                    tempBestMove = new Move(move.checker, move.newTile); // save the best move temporarily
+                Tile originalTile = tempState[originalPos - 1];
+                //move(move.checker, move.newTile, tempState); //place piece at first available position
+                move(moving, newTile, tempState);
+                int score = minimaxAB(depth - 1, "Computer", alpha, beta, tempState); // start recursion
+                
+                min_value = Math.min(min_value, score);
+                if (min_value == score) {
+                    tempBestMove = move;
+                    beta = Math.min(beta, min_value);
                 }
-
-                //Un do the move that happened
-                //int testPos = move.newTile.getPosition();
-                //state[testPos - 1].removeChecker();
-                //state[originalPos - 1].setChecker(move.checker);
-                //state = cloneState(gameState);
-                move(move.checker, originalTile, state);
-                //moveChecker(move.checker, testPos, originalPos);
-                //Any other states which need to be updated?
-
-                //Perform pruning if appropriate
                 if (beta <= alpha) {
                     pCount++;
                     break;
+                    
                 }
-
             }
             this.bestMove = tempBestMove;
-            return bestScore;
+            return min_value;
         } else {
-            bestScore = Integer.MIN_VALUE; //Computer is maximizing player
+            //int minScore = Integer.MAX_VALUE; //Computer is maximizing player
             List<Move> compMoves = getCompMoves(legalMoves);
             for (Move move : compMoves) {
-                //state = cloneState(gameState);
+                Tile[] tempState = cloneState(state);
                 deCount++;
                 int originalPos = move.checker.getPosition(); //Store original position for later undoing the move
-                move(move.checker, move.newTile, state);
-                int score = minimaxAB(depth - 1, "User", alpha, beta, state);
+                Tile originalTile = tempState[originalPos - 1];
+                move(move.checker, move.newTile, tempState);
+                int score = minimaxAB(depth - 1, "User", alpha, beta, tempState);
+                max_value = Math.max(score, max_value);
 
-                bestScore = Math.max(score, bestScore);
-
-                //beta = Math.min(score, beta);
-                if (bestScore > beta) {
-                    
-                    beta = bestScore;
+                if (max_value == score) {
                     tempBestMove = move;
+                    alpha= Math.max(alpha, max_value);
                 }
-
-                //Un do the move that happened
-                //int testPos = move.newTile.getPosition();
-                //state[testPos - 1].removeChecker();
-                //state[originalPos - 1].setChecker(move.checker);
-                move.checker.position = originalPos;
-                //moveChecker(move.checker, testPos, originalPos);
-
-                //state = cloneState(gameState);
                 if (beta <= alpha) {
                     pCount++;
                     break;
-
                 }
             }
-
             this.bestMove = tempBestMove;
-            return bestScore;
+            return max_value;
         }
-        //this.bestMove = tempBestMove;
-        //return bestScore;
     }
 
     public Move getBestMove2() {
@@ -493,11 +454,11 @@ public class Game {
                 }
             }
         }
-        return human_score - ai_score;
+        return ai_score - human_score;
     }
 
     public void setDifficulty(int difficulty) {
-        this.depthLimit = 2 * difficulty;
+        this.depthLimit = difficulty;
     }
 
     public boolean compWin(Tile[] state) {
