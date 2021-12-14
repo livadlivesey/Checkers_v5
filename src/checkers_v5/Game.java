@@ -106,7 +106,7 @@ public class Game {
                         //Iterate through the tiles to find the tile with the matching row and column values, to be added as a potential move
                         Move m = new Move(current, t);
                         //Set as a capturing move
-                        m.setCapturing();
+                        m.setCapturingMove();
                         legalMoves.add(m);   
                     }
                 }
@@ -178,13 +178,6 @@ public class Game {
         return allCheckers;
     }
 
-    public boolean isCapturingMove(Checker checker, Tile tile) {
-        boolean isCapture = false;
-        if (checker.getRow() == tile.getRow() + 2 || checker.getRow() == tile.getRow() - 2) {
-            isCapture = true;
-        }
-        return isCapture;
-    }
 
     public Checker getCapturedChecker(Checker checker, Tile tile) {
         Checker captured = null;

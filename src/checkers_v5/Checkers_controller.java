@@ -401,14 +401,17 @@ public class Checkers_controller implements Initializable {
                     tiles[t.getPosition() - 1].setEffect(null);
                 }
             }
+            selectedChecker.setOpacity(1.0);
 
             //If a checker has already been selected, but the user has now selected a different one, change selection
             if (selectedChecker.equals(event.getSource())) {
                 //If the checker is clicked twice, de select it and remove effect for all potential highlighted moves
+                selectedChecker = null;
                 ongoingMove = false;
                 updateStates();
                 return;
             }
+            selectedChecker = null;
         } else if (event.getSource() instanceof Circle) {
             // Select the checker and change opacity 
             selectedChecker = (Circle) event.getSource();
@@ -521,17 +524,16 @@ public class Checkers_controller implements Initializable {
 
                     updateStates();
 
-                    if (model.isCapturingMove(c, t)) {
-                        System.out.println("Capturing: " + c.toString());
-                        Checker captured = model.getCapturedChecker(c, t);
+                    if (m.isCapturingMove()) {
+                        System.out.println("Capturing: " + m.getChecker().toString());
+                        //Checker captured = model.getCapturedChecker(bestMove.getChecker(), bestMove.getTile());
+                        Checker captured = m.getCapturedChecker();
                         capturedChecker = convertChecker(captured);
-                        for (Pane row : panes) {
-                            if (row.getChildren().contains(capturedChecker)) {
-                                row.getChildren().remove(capturedChecker);
-                            }
-                        }
-                        model.removeChecker(c);
-                    }
+                        deleteChecker(capturedChecker);
+                        model.removeChecker(m.getChecker());
+                        checkerState.remove(capturedChecker);
+
+                    } 
                     model.currentPlayer = "Computer";
                     System.out.println("\n I'm thinking...");
                     moveCompChecker();
@@ -568,13 +570,12 @@ public class Checkers_controller implements Initializable {
         System.out.print("Model.bestMove: " + model.bestMove);
 
         bestMove = model.getBestMove2();
-        
+
         selectedChecker = convertChecker(bestMove.getChecker());
         selectedTile = convertTile(bestMove.getTile());
 
         System.out.println(selectedChecker);
         System.out.println(selectedTile);
-
 
         Point2D newPos = calc_position(selectedChecker, selectedTile);
         Double newX = newPos.getX() + selectedChecker.getCenterX();
@@ -586,23 +587,21 @@ public class Checkers_controller implements Initializable {
 
         model.move(bestMove.getChecker(), bestMove.getTile(), model.gameState);
 
-        if (model.isCapturingMove(bestMove.getChecker(), bestMove.getTile())) {
+        if (bestMove.isCapturingMove()) {
             System.out.println("Capturing: " + bestMove.getChecker().toString());
-            Checker captured = model.getCapturedChecker(bestMove.getChecker(), bestMove.getTile());
+            //Checker captured = model.getCapturedChecker(bestMove.getChecker(), bestMove.getTile());
+            Checker captured = bestMove.getCapturedChecker();
             capturedChecker = convertChecker(captured);
-            for (Pane row : panes) {
-                if (row.getChildren().contains(capturedChecker)) {
-                    row.getChildren().remove(capturedChecker);
-                }
-            }
+            deleteChecker(capturedChecker);
             model.removeChecker(bestMove.getChecker());
-        }
+            checkerState.remove(capturedChecker);
 
-        tileState.replace(selectedTile, convertRectangle(selectedTile));
-        checkerState.replace(selectedChecker, convertCircle(selectedChecker));
-        //selectedChecker = null;
-        //selectedTile = null;
+        } else {
+            tileState.replace(selectedTile, convertRectangle(selectedTile));
+            checkerState.replace(selectedChecker, convertCircle(selectedChecker));
+        }
         model.currentPlayer = "User";
+        updateStates();
     }
 
     /**
@@ -737,6 +736,34 @@ public class Checkers_controller implements Initializable {
         int pos = checker.getPosition();
         Circle c = circles[pos - 1];
         return c;
+    }
+
+    public void deleteChecker(Circle captured) {
+        for (Pane row : panes) {
+            if (row.getChildren().contains(captured)) {
+                row.getChildren().remove(captured);
+            }
+        }
+        
+        for (int i=0; i<rectangleGroup.getChildren().size(); i++) {
+            Pane p = (Pane) rectangleGroup.getChildren().get(i);
+            p.getChildren().remove(captured);
+        }
+        
+        Node lookup = vbox.lookup(captured.getId());
+        vbox.getChildren().remove(lookup);
+
+        if (user_checkers.contains(captured)) {
+            user_checkers.remove(captured);
+        } else if (comp_checkers.contains(captured)) {
+            comp_checkers.remove(captured);
+        }
+
+        for (int i = 0; i < circles.length; i++) {
+            if (circles[i].equals(captured)) {
+                circles[i] = null;
+            }
+        }
     }
 
     public Checkers_controller() {
