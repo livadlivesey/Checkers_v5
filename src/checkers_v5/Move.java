@@ -11,6 +11,7 @@ public class Move {
     private int newPos;
     Checker checker;
     Tile newTile;
+    boolean isCapturing = false;
     
     public Move(Checker checker, Tile destination) {
         this.checker = checker;
@@ -21,6 +22,14 @@ public class Move {
     
     public Checker getChecker() {
         return this.checker;
+    }
+    
+    public void setCapturing() {
+        this.isCapturing = true;
+    }
+    
+    public boolean getCapturing() {
+        return this.isCapturing;
     }
     
     public int getOriginalPos() {
