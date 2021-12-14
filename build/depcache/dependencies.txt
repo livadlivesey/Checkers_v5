@@ -24,7 +24,6 @@ javafx.scene.control.ChoiceDialog
 javafx.scene.layout.VBox
 java.lang.Integer
 java.util.ArrayList
-javafx.scene.Parent
 javafx.fxml.FXMLLoader
 javafx.geometry.Point2D
 javafx.scene.transform.Transform
@@ -38,9 +37,11 @@ javafx.scene.paint.Color
 java.util.Iterator
 checkers_v5.Checker
 checkers_v5.Checkers_controller
+javafx.scene.Node
 javafx.scene.transform.Translate
 javafx.scene.shape.Rectangle
 java.io.IOException
+javafx.scene.Group
 javafx.scene.effect.DropShadow
 checkers_v5.Game
 checkers_v5.Move

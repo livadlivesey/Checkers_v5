@@ -64,7 +64,7 @@ public class Move {
 
     @Override
     public String toString() {
-        String s = "Checker: " + this.checker.toString() + ", Tile: " + this.newTile.toString();
+        String s = "Checker: " + this.checker.toString() + ", Tile: " + this.newTile.toString() + "Capturing: "+ this.capturedChecker;
         return s;
     }
 

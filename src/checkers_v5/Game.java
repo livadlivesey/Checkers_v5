@@ -84,6 +84,7 @@ public class Game {
                 // If the tile is occupied by the opponent's checker, intialise newRow, newCol
                 int newRow = 0;
                 int newCol = 0;
+                
                 if (current.getRow() + 1 == tile.getRow() && current.getCol() + 1 == tile.getCol()) {
                     // If the opponent's checker is bottom right diagonal
                     newRow = tile.getRow() + 1;
@@ -107,6 +108,10 @@ public class Game {
                         Move m = new Move(current, t);
                         //Set as a capturing move
                         m.setCapturingMove();
+                        int capturedPos = tile.getPosition();
+
+                        m.setCapturedChecker(gameState[capturedPos-1].getChecker());
+                        System.out.println(m);
                         legalMoves.add(m);   
                     }
                 }
@@ -142,7 +147,7 @@ public class Game {
      */
     public void removeChecker(Checker checker) {
         for (Tile tile : gameState) {
-            if (tile.getChecker().equals(checker)) {
+            if (tile.hasChecker() && tile.getChecker().equals(checker)) {
                 tile.removeChecker();
             }
         }
@@ -176,33 +181,6 @@ public class Game {
             }
         }
         return allCheckers;
-    }
-
-
-    public Checker getCapturedChecker(Checker checker, Tile tile) {
-        Checker captured = null;
-        int newRow = 0;
-        int newCol = 0;
-        if (checker.getRow() == tile.getRow() + 2) {
-            newRow = checker.getRow() + 1;
-        } else if (checker.getRow() == tile.getRow() + 2) {
-            newRow = checker.getRow() - 1;
-        }
-        if (checker.getCol() == tile.getCol() - 2) {
-            newCol = checker.getCol() - 1;
-
-        } else if (checker.getCol() == tile.getRow() + 2) {
-            newCol = checker.getCol() + 1;
-        }
-
-        List<Checker> checkers = getCheckers();
-        for (Checker c : checkers) {
-            if (c.getRow() == newRow && c.getCol() == newCol) {
-                captured = c;
-            }
-        }
-        return captured;
-
     }
 
     /**

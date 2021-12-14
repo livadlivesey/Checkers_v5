@@ -44,6 +44,7 @@ public class Checkers_v5 extends Application {
         
         stage.setScene(scene);
         stage.show();
+
     }
 
     /**
