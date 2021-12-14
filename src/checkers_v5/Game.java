@@ -76,71 +76,10 @@ public class Game {
      * surrounding, checks if the move is legal
      *
      * @param current
-     * @return List of tile objects which can be moved to
-     */
-    public List<Tile> getLegalMoves(Checker current) {
-
-        List<Tile> legalMoves = new ArrayList<>();
-        List<Integer> neighbours = current.getNeighbouringPositions();
-        //System.out.println(neighbours);
-        for (int i : neighbours) {
-            Tile tile = gameState[i - 1]; //Use -1 as the stored positions are in checker notation, and array starts from index 0
-            if (current.getOwner().equals(currentPlayer) && tile.hasChecker() == false) {
-                legalMoves.add(tile);
-
-            }
-            if (tile.hasChecker() == true && !tile.getChecker().getOwner().equals(current.getOwner())) {
-                int newRow = 0;
-                int newCol = 0;
-                //Hashtable<Integer, Integer> positions = new Hashtable<>();
-                if (current.getRow() + 1 == tile.getRow() && current.getCol() + 1 == tile.getCol()) {
-                    newRow = tile.getRow() + 1;
-                    newCol = tile.getCol() + 1;
-                    //positions.put(newRow, newCol);
-
-                } else if (current.getRow() + 1 == tile.getRow() && current.getCol() - 1 == tile.getCol()) {
-                    newRow = tile.getRow() + 1;
-                    newCol = tile.getCol() - 1;
-                    //positions.put(newRow, newCol);
-
-                } else if (current.getRow() - 1 == tile.getRow() && current.getCol() + 1 == tile.getCol()) {
-                    newRow = tile.getRow() - 1;
-                    newCol = tile.getCol() + 1;
-                    //positions.put(newRow, newCol);
-
-                } else if (current.getRow() - 1 == tile.getRow() && current.getCol() - 1 == tile.getCol()) {
-                    newRow = tile.getRow() - 1;
-                    newCol = tile.getCol() - 1;
-                    //positions.put(newRow, newCol);
-                }
-
-                for (Tile t : gameState) {
-                    //System.out.println("ROW: " + t.getRow());
-                    //System.out.println("COL: " + t.getCol());
-
-                    if (t.getRow() == newRow && t.getCol() == newCol && t.hasChecker() == false) {
-
-                        legalMoves.add(t);
-                        //System.out.println("Legal tile: " + t.toString());
-                    }
-                    //Add alert if no possible positions
-                }
-            }
-        }
-
-        //System.out.println(legalMoves);
-        return legalMoves;
-    }
-
-    /**
-     * Gets the legal moves for the given tile For each tile which is
-     * surrounding, checks if the move is legal
-     *
-     * @param current
      * @param state
      * @return List of tile objects which can be moved to
      */
-    public List<Move> getLegalMoves2(Checker current, Tile[] state) {
+    public List<Move> getLegalMoves(Checker current, Tile[] state) {
 
         List<Move> legalMoves = new ArrayList<>();
         List<Integer> neighbours = current.getNeighbouringPositions();
@@ -153,24 +92,19 @@ public class Game {
             if (tile.hasChecker() == true && !tile.getChecker().getOwner().equals(current.getOwner())) {
                 int newRow = 0;
                 int newCol = 0;
-
                 if (current.getRow() + 1 == tile.getRow() && current.getCol() + 1 == tile.getCol()) {
                     newRow = tile.getRow() + 1;
                     newCol = tile.getCol() + 1;
-
                 } else if (current.getRow() + 1 == tile.getRow() && current.getCol() - 1 == tile.getCol()) {
                     newRow = tile.getRow() + 1;
                     newCol = tile.getCol() - 1;
-
                 } else if (current.getRow() - 1 == tile.getRow() && current.getCol() + 1 == tile.getCol()) {
                     newRow = tile.getRow() - 1;
                     newCol = tile.getCol() + 1;
-
                 } else if (current.getRow() - 1 == tile.getRow() && current.getCol() - 1 == tile.getCol()) {
                     newRow = tile.getRow() - 1;
                     newCol = tile.getCol() - 1;
                 }
-
                 for (Tile t : state) {
                     if (t.getRow() == newRow && t.getCol() == newCol && t.hasChecker() == false) {
                         legalMoves.add(new Move(current, t));
@@ -179,7 +113,6 @@ public class Game {
                 }
             }
         }
-
         //System.out.println(legalMoves);
         return legalMoves;
     }
@@ -189,7 +122,7 @@ public class Game {
         for (Tile t : state) {
             if (t.hasChecker()) {
                 Checker c = t.getChecker();
-                allMoves.addAll(getLegalMoves2(c, state));
+                allMoves.addAll(getLegalMoves(c, state));
             }
 
         }

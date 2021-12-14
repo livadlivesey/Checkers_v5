@@ -22,6 +22,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ChoiceDialog;
 import javafx.scene.effect.DropShadow;
+import javafx.scene.effect.InnerShadow;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -46,94 +47,27 @@ public class Checkers_controller implements Initializable {
 
     @FXML
     private Pane row7;
-    @FXML
-    private Rectangle sq0_7;
-    @FXML
-    private Rectangle sq2_7;
-    @FXML
-    private Rectangle sq4_7;
-    @FXML
-    private Rectangle sq6_7;
 
     @FXML
     private Pane row6;
-    @FXML
-    private Rectangle sq1_6;
-    @FXML
-    private Rectangle sq3_6;
-    @FXML
-    private Rectangle sq5_6;
-    @FXML
-    private Rectangle sq7_6;
 
     @FXML
     private Pane row5;
-    @FXML
-    private Rectangle sq0_5;
-    @FXML
-    private Rectangle sq2_5;
-    @FXML
-    private Rectangle sq3_5;
-    @FXML
-    private Rectangle sq4_5;
-    @FXML
-    private Rectangle sq6_5;
 
     @FXML
     private Pane row4;
-    @FXML
-    private Rectangle sq1_4;
-    @FXML
-    private Rectangle sq3_4;
-    @FXML
-    private Rectangle sq5_4;
-    @FXML
-    private Rectangle sq7_4;
 
     @FXML
     private Pane row3;
-    @FXML
-    private Rectangle sq0_3;
-    @FXML
-    private Rectangle sq2_3;
-    @FXML
-    private Rectangle sq4_3;
-    @FXML
-    private Rectangle sq6_3;
+
     @FXML
     private Pane row2;
-    @FXML
-    private Rectangle sq1_2;
-    @FXML
-    private Rectangle sq3_2;
-    @FXML
-    private Rectangle sq5_2;
-    @FXML
-    private Rectangle sq7_2;
 
     @FXML
     private Pane row1;
-    @FXML
-    private Rectangle sq0_1;
-    @FXML
-    private Rectangle sq2_1;
-    @FXML
-    private Rectangle sq4_1;
-    @FXML
-    private Rectangle sq6_1;
 
     @FXML
     private Pane row0;
-    @FXML
-    private Rectangle sq1_0;
-    @FXML
-    private Rectangle sq3_0;
-    @FXML
-    private Rectangle sq5_0;
-    @FXML
-    private Rectangle sq7_0;
-
-    private final List<Pane> panes = new ArrayList<>();
 
     @FXML
     private Circle user_1;
@@ -160,8 +94,6 @@ public class Checkers_controller implements Initializable {
     @FXML
     private Circle user_9;
 
-    ObservableList<Circle> user_checkers = FXCollections.observableArrayList();
-
     @FXML
     private Circle comp_1;
     @FXML
@@ -186,8 +118,6 @@ public class Checkers_controller implements Initializable {
     private Circle comp_11;
     @FXML
     private Circle comp_12;
-
-    ObservableList<Circle> comp_checkers = FXCollections.observableArrayList();
 
     @FXML
     private Rectangle pos1;
@@ -254,6 +184,12 @@ public class Checkers_controller implements Initializable {
     @FXML
     private Rectangle pos32;
 
+    private final List<Pane> panes = new ArrayList<>();
+
+    ObservableList<Circle> comp_checkers = FXCollections.observableArrayList();
+
+    ObservableList<Circle> user_checkers = FXCollections.observableArrayList();
+
     //All the positions on the gameState
     List<Rectangle> blackTiles;
 
@@ -282,11 +218,14 @@ public class Checkers_controller implements Initializable {
     Hashtable<Rectangle, Tile> tileState;
     Rectangle[] tiles;
     Circle[] circles;
-    List<Rectangle> potentialMoves;
+    List<Move> potentialMoves;
     Tile[] gameState;
     private Circle highlightedChecker;
     int level;
     Move bestMove;
+    InnerShadow tileShadow;
+    InnerShadow tileShadow2;
+    DropShadow checkerShadow;
 
     Timer timer;
 
@@ -411,13 +350,37 @@ public class Checkers_controller implements Initializable {
         highlightedTile = null;
         bestMove = null;
 
+        // Shadow for tile highlighting
+        tileShadow = new InnerShadow();
+        tileShadow.setColor(Color.YELLOW);
+        tileShadow.setWidth(30);
+
+        //Shadow for legal moves highlighting
+        tileShadow2 = new InnerShadow();
+        tileShadow2.setColor(Color.WHITE);
+        tileShadow2.setWidth(30);
+
+        //Shadow for checker highlighting
+        checkerShadow = new DropShadow();
+        checkerShadow.setRadius(25);
+        checkerShadow.setOffsetX(15);
+        checkerShadow.setOffsetY(20);
+        checkerShadow.setColor(Color.web("#006666"));
+
+        for (int i = 0; i < 8; i++) {
+            System.out.println("index: " + i + "Panes: " + panes.get(i));
+            System.out.println("index: " + i + "Panes Children: " + panes.get(i).getChildren());
+            System.out.println("index: " + i + "Rectangle Group: " + rectangleGroup.getChildren().get(i));
+
+        }
+
     }
 
     @FXML
     public void newGame() throws IOException {
         Scene scene = vbox.getScene();
         scene.setRoot(FXMLLoader.load(getClass().getResource("FXMLDocument.fmxl")));
-        Integer levels[] = {1, 2, 3};
+        Integer levels[] = {1, 2, 3, 4, 5};
         ChoiceDialog<Integer> difficulty = new ChoiceDialog<>(levels[0], levels);
         difficulty.setTitle("Choose Game difficulty");
         difficulty.setContentText("Easy for beginners, Intermediate if you like a challenge, Difficult if you want to try the impossible!");
@@ -430,8 +393,10 @@ public class Checkers_controller implements Initializable {
     @FXML
     public void selectChecker(MouseEvent event) {
         if (ongoingMove && event.getSource() instanceof Circle) {
-            for (Tile tile : model.getLegalMoves(convertCircle(selectedChecker))) {
-                tiles[tile.getPosition() - 1].setEffect(null);
+            potentialMoves = model.getLegalMoves(convertCircle(selectedChecker), model.gameState);
+            for (Move move : potentialMoves) {
+                Tile t = move.getTile();
+                tiles[t.getPosition() - 1].setEffect(null);
             }
             //If a checker has already been selected, but the user has now selected a different one, change selection
             if (selectedChecker.equals(event.getSource())) {
@@ -448,14 +413,14 @@ public class Checkers_controller implements Initializable {
             //Get the tile that the checker is on
             currentTile = getCurrentTile(event);
 
-            //Add an effect to all the possible moves
-            //if(level==1) 
-            DropShadow outerShadow = new DropShadow();
-            outerShadow.setColor(Color.YELLOW);
-            outerShadow.setWidth(20);
-            List<Tile> legalMoves = model.getLegalMoves(convertCircle(selectedChecker));
-            for (Tile tile : legalMoves) {
-                tiles[tile.getPosition() - 1].setEffect(outerShadow);
+            //Add an effect to all the possible moves if the level is selected as Easy
+            if (level == 1) {
+                List<Move> legalMoves = model.getLegalMoves(convertCircle(selectedChecker), model.gameState);
+                for (Move move : legalMoves) {
+                    Tile t = move.getTile();
+                    tiles[t.getPosition() - 1].setEffect(tileShadow);
+                    tiles[t.getPosition() - 1].setOpacity(1.0);
+                }
             }
             //Assign that there is an ongoing move
             ongoingMove = true;
@@ -468,11 +433,10 @@ public class Checkers_controller implements Initializable {
      */
     private void highlightSelected(MouseEvent event) {
         if (event.getSource() instanceof Circle) {
-
             highlightedChecker = (Circle) event.getSource();
             DropShadow outerShadow = new DropShadow();
             outerShadow.setColor(Color.PINK);
-            outerShadow.setWidth(10);
+            outerShadow.setWidth(20);
             highlightedChecker.setEffect(outerShadow);
         }
     }
@@ -487,17 +451,28 @@ public class Checkers_controller implements Initializable {
 
     @FXML
     private void selectNewTile(MouseEvent event) {
-        if (ongoingMove && event.getSource() instanceof Rectangle) {
+        if (ongoingMove && event.getSource() instanceof Rectangle && !event.getSource().equals(currentTile)) { // && event.getSource() instanceof Rectangle
             highlightedTile = (Rectangle) event.getSource();
-            highlightedTile.setOpacity(0.5d);
+            //highlightedTile.setFill(Color.BLUEVIOLET);
+            highlightedTile.setEffect(tileShadow2);
+
         }
     }
 
     @FXML
     private void removeTileSelection(MouseEvent event) {
-        if (highlightedTile != null && event.getSource() instanceof Rectangle) {
-            highlightedTile.setOpacity(1.0);
-            highlightedTile = null;
+        if (highlightedTile != null && event.getSource().equals(highlightedTile)) { // && event.getSource() instanceof Rectangle
+            if (highlightedTile.getEffect().equals(tileShadow2)) {
+                List<Move> legalMoves = model.getLegalMoves(convertCircle(selectedChecker), model.gameState);
+                for (Move move : legalMoves) {
+                    if (move.getTile().equals(convertRectangle(highlightedTile)) && move.getChecker().equals(convertCircle(selectedChecker))) {
+                        convertTile(move.getTile()).setEffect(tileShadow);
+                    } else {
+                        highlightedTile.setEffect(null);
+                        highlightedTile = null;
+                    }
+                }
+            }
         }
     }
 
@@ -508,12 +483,11 @@ public class Checkers_controller implements Initializable {
             if (ongoingMove) { //selectedChecker != null && model.getCurrentPlayer().equals("User")
                 Checker c = convertCircle(selectedChecker);
                 Tile t = convertRectangle(selectedTile);
-                //Move m = new Move(c, t);
-                //System.out.println("New Move: " + m);
-                //List<Move> available = model.getAllLegalMoves(model.gameState);
-                List<Tile> legalMoves = model.getLegalMoves(convertCircle(selectedChecker));
-                //System.out.println("GetAllLegalMoves: " + available);
-                if (legalMoves.contains(t)) {
+                Move m = new Move(c, t);
+                System.out.println("New Move: " + m);
+                List<Move> available = model.getAllLegalMoves(model.gameState);
+                System.out.println("GetAllLegalMoves: " + available);
+                if (available.contains(m)) {
                     //Calculating the position of the tile and current checker in the same parent node
                     Point2D newPos = calc_position(selectedChecker, selectedTile);
                     Double newX = newPos.getX() + selectedChecker.getCenterX();
@@ -521,9 +495,9 @@ public class Checkers_controller implements Initializable {
                     int originalPos = c.position;
 
                     move_position(selectedChecker, newX, newY);
-                    
 
-                    for (Tile tile : legalMoves) {
+                    for (Move move : available) {
+                        Tile tile = move.getTile();
                         tiles[tile.getPosition() - 1].setEffect(null);
                     }
                     model.move(c, t, model.gameState);
@@ -535,9 +509,9 @@ public class Checkers_controller implements Initializable {
                         alert.setTitle("Game Over");
                         alert.showAndWait();
                     }
-                    //tileState.replace(selectedTile, t);
-                    //checkerState.replace(selectedChecker, c);
-                    //circles[t.getPosition() - 1] = selectedChecker;
+                    tileState.replace(selectedTile, t);
+                    checkerState.replace(selectedChecker, c);
+                    circles[t.getPosition() - 1] = selectedChecker;
 
                     updateStates();
 
@@ -562,7 +536,9 @@ public class Checkers_controller implements Initializable {
                     alert.setHeaderText("Invalid Move");
                     alert.setTitle("Invalid Move");
                     alert.showAndWait();
-                    for (Tile tile : legalMoves) {
+
+                    for (Move move : available) {
+                        Tile tile = move.getTile();
                         tiles[tile.getPosition() - 1].setEffect(null);
                     }
                 }
@@ -577,7 +553,6 @@ public class Checkers_controller implements Initializable {
             ongoingMove = false;
             updateStates();
         }
-        //event.consume();
     }
 
     private void moveCompChecker() {
@@ -590,16 +565,14 @@ public class Checkers_controller implements Initializable {
 
         int tilePos = bestMove.getNewPos();
         int checkPos = bestMove.getOriginalPos();
-        
-        Checker c = gameState[checkPos-1].getChecker();
-        Tile t = gameState[tilePos-1];
-        
+
+        Checker c = gameState[checkPos - 1].getChecker();
+        Tile t = gameState[tilePos - 1];
+
         selectedChecker = circles[checkPos - 1];
         selectedTile = tiles[tilePos - 1];
         //selectedChecker = convertChecker(c);
         //selectedTile = convertTile(t);
-        
-        
 
         System.out.println(selectedChecker);
         System.out.println(selectedTile);
@@ -607,11 +580,8 @@ public class Checkers_controller implements Initializable {
         Point2D newPos = calc_position(selectedChecker, selectedTile);
         Double newX = newPos.getX() + selectedChecker.getCenterX();
         Double newY = newPos.getY() + selectedChecker.getCenterY();
-        System.out.println("CALC_POSITION NEW:" +newX+" ,"+newY);
-
+        
         move_position(selectedChecker, newX, newY);
-
-        //selectedTile.setOpacity(0.0);
         circles[bestMove.getTile().getPosition() - 1] = selectedChecker;
         tiles[bestMove.getTile().getPosition() - 1] = selectedTile;
 
@@ -629,8 +599,8 @@ public class Checkers_controller implements Initializable {
             model.removeChecker(bestMove.getChecker());
         }
 
-        //tileState.replace(selectedTile, convertRectangle(selectedTile));
-        //checkerState.replace(selectedChecker, convertCircle(selectedChecker));
+        tileState.replace(selectedTile, convertRectangle(selectedTile));
+        checkerState.replace(selectedChecker, convertCircle(selectedChecker));
         //selectedChecker = null;
         //selectedTile = null;
         model.currentPlayer = "User";
@@ -668,7 +638,6 @@ public class Checkers_controller implements Initializable {
      * @return
      */
     public Point2D calc_position(Circle currentChecker, Rectangle newPosition) {
-
         double newMinX = newPosition.getLayoutBounds().getMinX();
         double newMinY = newPosition.getLayoutBounds().getMinY();
 
@@ -676,17 +645,8 @@ public class Checkers_controller implements Initializable {
         Point2D inLocal = currentChecker.sceneToLocal(inScene);
         Point2D inParent = currentChecker.localToParent(inLocal);
 
-        double minX = newPosition.boundsInLocalProperty().get().getMinX();
-
-        double minY = newPosition.boundsInLocalProperty().get().getMinY();
-        //System.out.println("BOUNDS IN PARENT: ( " + minX + ", " + minY + " )");
-        Point2D boundsInScene = currentChecker.localToScene(minX, minY);
-        //System.out.println("BOUNDS IN Scene: ( " + boundsInScene.getX() + ", " + boundsInScene.getY() + " )");
-        //Gets the X and Y co ordinates of the new tiles position
         double newX = inParent.getX();
         double newY = inParent.getY();
-
-        //System.out.println("CURRENT CALC: ( " + newX + ", " + newY + " )");
 
         //Creates a 2D point with the X and Y co ordinates
         Point2D finalPos = new Point2D(newX, newY);
@@ -706,21 +666,12 @@ public class Checkers_controller implements Initializable {
     public void move_position(Circle checker, Double newX, Double newY) {
         // Use translate to preserve the current scale, translate etc properties
         Point2D inScene = checker.localToParent(checker.getLayoutBounds().getMinX(), checker.getLayoutBounds().getMinY());
-        //Point2D inScene = new Point2D(checker.getBoundsInParent().getMinX(), checker.getBoundsInParent().getMinY());
-        ///rectangleGroup.getChildren().add( new Rectangle(newX - inScene.getX(), newY - inScene.getY(), Color.ALICEBLUE));
-
         Translate translate = new Translate();
         translate.setX(newX - inScene.getX());
         translate.setY(newY - inScene.getY());
-        System.out.println("TRANSLATE NEW: "+translate.getX()+", "+translate.getY());
-        checker.getTransforms().addAll(translate);
-        
-        
 
-        //System.out.println(checker.getTransforms());
-        
+        checker.getTransforms().addAll(translate);
         checker.setOpacity(1.0);
-        //Updating the available positions based on the move
     }
 
     /**
@@ -732,7 +683,8 @@ public class Checkers_controller implements Initializable {
     public void updateStates() {
         if (selectedTile != null) {
             selectedTile.setEffect(null);
-            selectedTile.setOpacity(1.0);
+            selectedTile.setFill(null);
+            selectedTile.setOpacity(0.0);
             selectedTile = null;
         }
         if (selectedChecker != null) {
@@ -742,13 +694,13 @@ public class Checkers_controller implements Initializable {
         }
         if (currentTile != null) {
             currentTile.setEffect(null);
-            currentTile.setOpacity(1.0);
             currentTile = null;
         }
 
         if (highlightedTile != null) {
             highlightedTile.setEffect(null);
-            highlightedTile.setOpacity(1.0);
+            highlightedTile.setFill(null);
+            highlightedTile.setOpacity(0.0);
             highlightedTile = null;
         }
 
@@ -767,16 +719,19 @@ public class Checkers_controller implements Initializable {
     }
 
     public Tile convertRectangle(Rectangle r) {
-        Tile tile = tileState.get(r);
+        Tile tile = null;
+        for (int i = 0; i < tiles.length; i++) {
+            if (tiles[i].equals(r)) {
+                tile = gameState[i];
+            } 
+        }
+        //Tile tile = tileState.get(r);
         return tile;
     }
 
     public Rectangle convertTile(Tile t) {
         int pos = t.getPosition();
         Rectangle r = tiles[pos - 1];
-        for (Node p : rectangleGroup.getChildren()) {
-            System.out.println(p);
-        }
         return r;
     }
 
