@@ -116,6 +116,7 @@ public class Checker {
     public String getOwner() {
         return this.owner;
     }
+    
 
     /**
      * Moves the current piece to the specified position

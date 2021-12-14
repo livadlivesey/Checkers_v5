@@ -471,24 +471,16 @@ public class Checkers_controller implements Initializable {
 
     @FXML
     public void selectChecker(MouseEvent event) {
-        if (ongoingMove && event.getSource() instanceof Circle && selectedChecker != null) {
-            if (!potentialMoves.isEmpty()) {
-                for (Move move : potentialMoves) {
-                    Tile t = move.getTile();
-                    t.getRectangle().setEffect(null);
-                }
-            }
-            selectedChecker.setOpacity(1.0);
+        if (ongoingMove && selectedChecker != null) {
+            ongoingMove = false;
+
             //If a checker has already been selected, but the user has now selected a different one, change selection
             if (selectedChecker.equals(event.getSource())) {
-                //If the checker is clicked twice, de select it and remove effect for all potential highlighted moves
-                selectedChecker = null;
-                ongoingMove = false;
-                updateStates();
+                updateStates();//If the checker is clicked twice, de select it and remove effect for all potential highlighted moves
                 return;
             }
-            selectedChecker = null;
-        } else if (event.getSource() instanceof Circle) {
+            updateStates();
+        } else {
             // Select the checker and change opacity 
             selectedChecker = (Circle) event.getSource();
             selectedChecker.setOpacity(0.5d);
@@ -496,15 +488,15 @@ public class Checkers_controller implements Initializable {
             //Get the tile that the checker is on
             currentTile = getCurrentTile(event);
             //Add an effect to all the possible moves if the level is selected as Easy
-            //if (level == 1 || level == 1 || level == 3) {
-            potentialMoves = model.getUserMoves(model.getLegalMoves(convertCircle(selectedChecker), model.gameState));
-            System.out.println(" Available User Moves: "+potentialMoves);
-            for (Move move : potentialMoves) {
-                Tile t = move.getTile();
-                t.getRectangle().setEffect(tileShadow);
-                t.getRectangle().setOpacity(1.0);
+            if (level == 1 || level == 1 || level == 3) {
+                potentialMoves = (model.getLegalMoves(convertCircle(selectedChecker), model.gameState));
+                System.out.println(" Available User Moves: " + potentialMoves);
+                for (Move move : potentialMoves) {
+                    Tile t = move.getTile();
+                    t.getRectangle().setEffect(tileShadow);
+                    t.getRectangle().setOpacity(1.0);
+                }
             }
-            //}
             //Assign that there is an ongoing move
             ongoingMove = true;
         }
@@ -574,84 +566,55 @@ public class Checkers_controller implements Initializable {
             selectedTile = (Rectangle) event.getTarget();
             if (ongoingMove) { //selectedChecker != null && model.getCurrentPlayer().equals("User")
                 Checker c = convertCircle(selectedChecker);
-                //model.selectedChecker = convertCircle(selectedChecker); //Instead of constanlty re converting - use models objects
                 Tile t = convertRectangle(selectedTile);
-                //model.selectedTile = convertRectangle(selectedTile);
-                List<Move> available = model.getAllLegalMoves(model.gameState);
-                if (available.contains(new Move(c, t))) {
-                    for (int i = 0; i < available.size(); i++) {
-                        if (new Move(c, t).equals(available.get(i))) {
-                            currentMove = available.get(i);
-                            System.out.println(" User Move: " +currentMove);
+                potentialMoves = model.getLegalMoves(c, model.gameState);
+                for (Move move : potentialMoves) {
+                    if (move.getChecker().equals(c) && move.getTile().equals(t)) {
+                        currentMove = move;
+                        System.out.println(" User Move: " + currentMove);
+
+                        //Calculating the position of the tile and current checker in the same parent node
+                        Point2D newPos = calc_position(selectedChecker, selectedTile);
+                        Double newX = newPos.getX() + selectedChecker.getCenterX();
+                        Double newY = newPos.getY() + selectedChecker.getCenterY();
+
+                        move_position(selectedChecker, newX, newY);
+                        model.move2(currentMove, model.gameState);
+
+                        if (currentMove.isCapturingMove()) {
+                            deleteChecker(convertChecker(currentMove.getCapturedChecker()));
                         }
-                    }
-                    //Calculating the position of the tile and current checker in the same parent node
-                    Point2D newPos = calc_position(selectedChecker, selectedTile);
-                    Double newX = newPos.getX() + selectedChecker.getCenterX();
-                    Double newY = newPos.getY() + selectedChecker.getCenterY();
 
-                    move_position(selectedChecker, newX, newY);
-
-                    //If the move is a capturing move, make sure to remove the piece from board and representations
-                    if (currentMove.isCapturingMove()) {
-                        //Get the captured checker 
-                        Checker captured = currentMove.getCapturedChecker();
-                        //Convert checker to JavaFX circle
-                        capturedChecker = captured.getCircle();
-                        //Remove from the root pane
-                        root.getChildren().remove(capturedChecker);
-                        // Make sure all references to the checker have been updated accordingly
-                        deleteChecker(capturedChecker);
-                        // Remove from the model
-                        model.removeChecker(currentMove.getChecker());
-                        //TODO: Remove circle too?
-                    }
-                    model.move(c, t, model.gameState);
-
-                    if (model.isGameOver(model.gameState)) {
-                        Alert alert = new Alert(AlertType.WARNING, " ", ButtonType.OK);
-                        alert.setContentText("The game is over, the winner is: TO DO ");
-                        alert.setHeaderText("Game Over");
-                        alert.setTitle("Game Over");
-                        alert.showAndWait();
-                    }
-                    
-                    model.nextTurn();
-                    System.out.println("\n I'm thinking...");
-                    moveCompChecker();
-
-                    for (Move move : available) {
-                        move.getTile().getRectangle().setEffect(null);
-                        move.getTile().getRectangle().setOpacity(0.0);
-                    }
-                    //updateStates();
-
-                    //model.currentPlayer = "Computer";
-                    //System.out.println("\n I'm thinking...");
-                    //moveCompChecker();
-
-                } else {
-                    Alert alert = new Alert(AlertType.WARNING, " ", ButtonType.OK);
-                    alert.setContentText("This is not a valid move. ");
-                    alert.setHeaderText("Invalid Move");
-                    alert.setTitle("Invalid Move");
-                    alert.showAndWait();
-
-                    for (Move move : available) {
-                        move.getTile().getRectangle().setEffect(null);
+                        if (model.isGameOver(model.gameState)) {
+                            Alert alert = new Alert(AlertType.WARNING, " ", ButtonType.OK);
+                            alert.setContentText("The game is over, the winner is: TO DO ");
+                            alert.setHeaderText("Game Over");
+                            alert.setTitle("Game Over");
+                            alert.showAndWait();
+                        }
+                        model.nextTurn();
+                        System.out.println("\n I'm thinking...");
+                        moveCompChecker();
                     }
                 }
             } else {
                 Alert alert = new Alert(AlertType.WARNING, " ", ButtonType.OK);
-                alert.setContentText("Please select a checker to move and then reselect the tile!");
-                alert.setHeaderText("No checker selected");
+                alert.setContentText("This is not a valid move. ");
+                alert.setHeaderText("Invalid Move");
                 alert.setTitle("Invalid Move");
                 alert.showAndWait();
-
             }
-            ongoingMove = false;
-            updateStates();
+        } else {
+            Alert alert = new Alert(AlertType.WARNING, " ", ButtonType.OK);
+            alert.setContentText("Please select a checker to move and then reselect the tile!");
+            alert.setHeaderText("No checker selected");
+            alert.setTitle("Invalid Move");
+            alert.showAndWait();
+
         }
+        ongoingMove = false;
+        updateStates();
+
     }
 
     private void moveCompChecker() {
@@ -661,8 +624,13 @@ public class Checkers_controller implements Initializable {
         System.out.print("AI Move: " + model.bestMove);
 
         bestMove = model.getBestMove2();
-        Checker bestChecker = bestMove.getChecker();
-        Tile bestTile = bestMove.getTile();
+        //Checker bestChecker = bestMove.getChecker();
+        //Tile bestTile = bestMove.getTile();
+        //selectedChecker = bestChecker.getCircle();
+        //selectedTile = bestTile.getRectangle();
+
+        Checker bestChecker = model.gameState[bestMove.getOriginalPos() - 1].getChecker();
+        Tile bestTile = model.gameState[bestMove.getNewPos() - 1];
         selectedChecker = bestChecker.getCircle();
         selectedTile = bestTile.getRectangle();
 
@@ -672,25 +640,14 @@ public class Checkers_controller implements Initializable {
         Double newY = newPos.getY() + selectedChecker.getCenterY();
         move_position(selectedChecker, newX, newY);
 
-        //Transform co-ordinates of checker to new tile point
-        move_position(selectedChecker, newX, newY);
-        
         //If the move is a capturing move, make sure to remove the piece from board and representations
-        if (currentMove.isCapturingMove()) {
-            //Get the captured checker 
-            Checker captured = currentMove.getCapturedChecker();
-            //Convert checker to JavaFX circle
-            capturedChecker = captured.getCircle();
-            //Remove from the root pane
-            root.getChildren().remove(capturedChecker);
-            // Make sure all references to the checker have been updated accordingly
-            deleteChecker(capturedChecker);
-            // Remove from the model
-            model.removeChecker(captured);
-            //TODO: Remove circle from checker and window
+        model.move2(bestMove, model.gameState);
+
+        if (bestMove.isCapturingMove()) {
+            deleteChecker(convertChecker(bestMove.getCapturedChecker()));
         }
-        model.move(bestChecker, bestTile, model.gameState);
-        model.currentPlayer = "User";
+        //model.move(bestChecker, bestTile, model.gameState);
+        model.nextTurn();
         updateStates();
     }
 
@@ -798,7 +755,14 @@ public class Checkers_controller implements Initializable {
             capturedChecker = null;
         }
         //reset the moves
+        for (Move move : potentialMoves) {
+            move.getTile().getRectangle().setEffect(null);
+            move.getTile().getRectangle().setOpacity(0.0);
+        }
         potentialMoves = new ArrayList<>();
+
+        bestMove = null;
+        currentMove = null;
     }
 
     public Checker convertCircle(Circle c) {
@@ -810,7 +774,6 @@ public class Checkers_controller implements Initializable {
             }
         }
         return model.gameState[i - 1].getChecker();
-        //return checkerState.get(c);
     }
 
     public Tile convertRectangle(Rectangle r) {
@@ -821,7 +784,6 @@ public class Checkers_controller implements Initializable {
                 break;
             }
         }
-
         return model.gameState[i - 1];
     }
 
@@ -834,28 +796,25 @@ public class Checkers_controller implements Initializable {
     }
 
     public void deleteChecker(Circle captured) {
-        for (Pane row : panes) {
-            if (row.getChildren().contains(captured)) {
-                row.getChildren().remove(captured);
-            }
-        }
-
+//
+//        for (Pane row : panes) {
+//            if (row.getChildren().contains(captured)) {
+//                System.out.println(row.getChildren());
+//                row.getChildren().remove(captured);
+//                System.out.println(row.getChildren());
+//            }
+//        }
         for (int i = 0; i < rectangleGroup.getChildren().size(); i++) {
             Pane p = (Pane) rectangleGroup.getChildren().get(i);
             p.getChildren().remove(captured);
-            p.getChildren().remove(p.lookup(captured.getId()));
+            //p.getChildren().remove(p.lookup(captured.getId()));
         }
-
-        Node lookup = vbox.lookup(captured.getId());
-        vbox.getChildren().remove(lookup);
 
         if (user_checkers.contains(captured)) {
             user_checkers.remove(captured);
         } else if (comp_checkers.contains(captured)) {
             comp_checkers.remove(captured);
         }
-
-        root.getChildren().remove(captured);
     }
 
     public Checkers_controller() {

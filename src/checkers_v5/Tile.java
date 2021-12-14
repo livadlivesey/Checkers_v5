@@ -147,13 +147,12 @@ public class Tile {
     }
 
     public void setChecker(Checker checker) {
-        
+        checker.move(this.position);
         currentChecker = checker;
         hasChecker = true;
     }
 
     public void removeChecker() {
-        
         currentChecker = null;
         hasChecker = false;
     }
