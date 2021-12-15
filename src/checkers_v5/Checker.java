@@ -6,9 +6,11 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
 /**
- * Write a description of class Checker here.
+ * Checker is an object representing each piece on the board
+ * It holds a reference to it's owner, its surrounding positions, the row and column, position
+ * As well as the corresponding javaFX object in the GUI
  *
- * @author (your name)
+ * @author 215865
  * @version (a version number or a date)
  */
 public class Checker {
@@ -24,10 +26,11 @@ public class Checker {
     private final Circle circle;
 
     /**
-     *
-     * @param position
-     * @param owner
-     * @param circle
+     * Create a new Checker at the given position, with the given owner, which is in GUI with given circle
+     * 
+     * @param position The position of the checker in checker notation
+     * @param owner The player who owns the piece
+     * @param circle GUI object
      */
     public Checker(int position, String owner, Circle circle) {
         this.owner = owner;
@@ -42,15 +45,16 @@ public class Checker {
 
     /**
      *
-     * @return
+     * @return the GUI object
      */
     public Circle getCircle() {
         return this.circle;
     }
 
     /**
-     *
-     * @return
+     * Creates a copy of the current checker to be used in the Minimax algorithm when copying the state
+     * 
+     * @return a clone of the current checker
      */
     public Checker cloneChecker() {
         Checker clone = new Checker(this.position, this.owner, this.circle);
@@ -115,7 +119,7 @@ public class Checker {
 
     /**
      *
-     * @return
+     * @return the neighbouring positions in checker notation
      */
     public List<Integer> getNeighbouringPositions() {
         calculateNeighbouringPositions();
@@ -143,17 +147,6 @@ public class Checker {
     }
     
     /**
-     * 
-     * Simply uses the opposite of isProtected in order 
-     *
-     * @param state
-     * @return
-     */
-    public boolean isVulnerable(Tile[] state) {
-        return !isProtected(state);
-    }
-
-    /**
      *
      * @return
      */
@@ -162,8 +155,10 @@ public class Checker {
     }
 
     /**
+     * If the checker has reached the opposite end of the board, they are crowned
+     * This method is checked during each move so it is up to date
      *
-     * @return
+     * @return true if the current checker is king, false otherwise
      */
     public boolean isKing() {
         //if reached the opposite end of board
@@ -184,7 +179,8 @@ public class Checker {
     }
 
     /**
-     *
+     * Make changes to the GUI representation once a king
+     * 
      */
     public void paintKing() {
         this.circle.setStroke(Color.GOLD);
@@ -194,7 +190,7 @@ public class Checker {
 
     /**
      *
-     * @return
+     * @return player who owns the piece
      */
     public String getOwner() {
         return this.owner;
@@ -225,6 +221,7 @@ public class Checker {
      * @return
      */
     public int getRow() {
+        calculate_row();
         return this.row;
     }
 
@@ -233,11 +230,16 @@ public class Checker {
      * @return
      */
     public int getCol() {
+        calculate_col();
         return this.column;
     }
 
     /**
-     *
+     * 
+     * Given the position on the board in checker notation, calculate the row 
+     * 
+     * This method is used for finding capture/jump moves.
+     * 
      */
     public void calculate_row() {
         if (1 <= this.position && this.position <= 4) {
@@ -260,7 +262,9 @@ public class Checker {
     }
 
     /**
-     *
+     *Given the position on the board in checker notation, calculate the column position
+     * 
+     * This method is used for finding capture/jump moves.
      */
     public void calculate_col() {
         int pos = this.position;

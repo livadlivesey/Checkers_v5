@@ -395,7 +395,7 @@ public class Checkers_controller implements Initializable {
             //Get the tile that the checker is on
             currentTile = getCurrentTile(event);
             //Add an effect to all the possible moves if the level is selected as Easy
-            if (level == 1) {
+            if (difficulty.equals("Easy")) {
                 potentialMoves = (model.getLegalMoves(convertCircle(selectedChecker), model.gameState));
                 for (Move move : potentialMoves) {
                     Tile t = move.getTile();
@@ -432,19 +432,19 @@ public class Checkers_controller implements Initializable {
 
     @FXML
     private void selectNewTile(MouseEvent event) {
-        if (ongoingMove && event.getSource() instanceof Rectangle && !event.getSource().equals(currentTile)) { // && event.getSource() instanceof Rectangle
+        if (ongoingMove && event.getSource() instanceof Rectangle && !event.getSource().equals(currentTile)) {
             Rectangle r = (Rectangle) event.getSource();
             for (Move move : potentialMoves) {
                 if (move.getTile().getRectangle().equals(r)) {
                     r.setEffect(tileShadow2);
                     r.setOpacity(1.0);
-                } else {
-                    highlightedTile = (Rectangle) event.getSource();
-                    highlightedTile.setEffect(tileShadow2);
-                    highlightedTile.setOpacity(1.0);
-                    break;
                 }
             }
+
+            highlightedTile = (Rectangle) event.getSource();
+            highlightedTile.setEffect(tileShadow2);
+            highlightedTile.setOpacity(1.0);
+            //break;
         }
     }
 

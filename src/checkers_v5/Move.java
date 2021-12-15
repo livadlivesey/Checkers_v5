@@ -4,7 +4,8 @@ import java.util.Objects;
 
 /**
  *
- * @author liv
+ * @author 215865
+ * 
  */
 public class Move {
 
@@ -18,6 +19,11 @@ public class Move {
 
     /**
      *
+     * Creates an instance of a 'Move' object
+     * Holds reference to the checker and tile of the move, as well as if the move is regicide 
+     * or a capturing move
+     * 
+     * 
      * @param checker
      * @param destination
      */
@@ -29,14 +35,14 @@ public class Move {
         this.isCapturing = false;
         this.capturedChecker = null;
         this.regicide = isRegicide();
-        
-        //this.state = state;
     }
     
-        /**
-     *Returns true if the specified move involves regicide 
+     /** 
      * 
-     * @return
+     * If the move is a capturing move, and is capturing a king when the current checker is not a king
+     * then the move is regicide
+     * 
+     * @return true if regicide, false otherwise
      */
     public boolean isRegicide() {
         if (this.isCapturing && this.capturedChecker.isKing() && !this.checker.isKing()) {
@@ -47,7 +53,7 @@ public class Move {
     
     /**
      *
-     * @return
+     * @return current checker
      */
     public Checker getChecker() {
         return this.checker;
@@ -55,7 +61,7 @@ public class Move {
 
     /**
      *
-     * @param c
+     * @param c captured checker
      */
     public void setCapturedChecker(Checker c) {
         this.capturedChecker = c;
@@ -63,7 +69,8 @@ public class Move {
     }
 
     /**
-     *
+     * Determines if the move is a capturing move based on the row
+     * 
      * @param checker
      * @param tile
      */
@@ -75,7 +82,7 @@ public class Move {
 
     /**
      *
-     * @return
+     * @return captured checker
      */
     public Checker getCapturedChecker() {
         return this.capturedChecker;
@@ -83,7 +90,7 @@ public class Move {
 
     /**
      *
-     * @return
+     * @return true if capturing move, false otherwise
      */
     public boolean isCapturingMove() {
         return this.isCapturing;
@@ -91,7 +98,7 @@ public class Move {
 
     /**
      *
-     * @return
+     * @return original position of checker
      */
     public int getOriginalPos() {
         return this.originalPos;
@@ -99,7 +106,7 @@ public class Move {
 
     /**
      *
-     * @return
+     * @return  position of the destination tile
      */
     public int getNewPos() {
         return this.newPos;
@@ -107,7 +114,7 @@ public class Move {
 
     /**
      *
-     * @return
+     * @return the destination tile
      */
     public Tile getTile() {
         return this.newTile;
@@ -119,7 +126,6 @@ public class Move {
         if (this.isCapturing) {
             s += "Capturing: "+ this.capturedChecker;
         }
-        
         return s;
     }
 
@@ -136,7 +142,6 @@ public class Move {
             Move m = (Move) o;
             if (m.checker == this.checker && m.newTile == this.newTile) {
                 e = true;
-
             }
         }
         return e;
@@ -144,8 +149,6 @@ public class Move {
 
     @Override
     public int hashCode() {
-        //int hash =7;
-        //hash = 17*hash+(this.checker!= null && this.newTile != null ? this.checker.hashCode() + this.newTile.hashCode() : 0);
         return Objects.hash(checker, newTile);
     }
 

@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package checkers_v5;
 
 
@@ -12,7 +7,7 @@ import javafx.scene.shape.Rectangle;
 
 /**
  *
- * @author liv
+ * @author 215865
  */
 public class Tile {
 
@@ -24,9 +19,12 @@ public class Tile {
     Rectangle rectangle;
 
     /**
+     * Creates an instance of a tile object, which represents each position on the board
+     * 
+     * A tile holds reference to it's javaFX representation, and the checker on it, if any
      *
-     * @param position
-     * @param rectangle
+     * @param position position on the board in checker notation
+     * @param rectangle javaFX representation
      */
     public Tile(int position, Rectangle rectangle) {
         hasChecker = false;
@@ -40,7 +38,8 @@ public class Tile {
     }
     
     /**
-     *
+     * Return the JavaFX rectangle for the GUI
+     * 
      * @return
      */
     public Rectangle getRectangle() {
@@ -48,8 +47,9 @@ public class Tile {
     }
 
     /**
-     *
-     * @return
+     *  
+     * 
+     * @return row of the tile
      */
     public int getRow() {
         calculate_row();
@@ -57,8 +57,8 @@ public class Tile {
     }
 
     /**
-     *
-     * @return
+     * 
+     * @return col of the tile
      */
     public int getCol() {
         calculate_col();
@@ -66,7 +66,10 @@ public class Tile {
     }
 
     /**
-     *
+     * Given the position of the tile in checker notation, calculate the row
+     * 
+     * This method is used for checking jump/capturing moves.
+     * 
      */
     public void calculate_row() {
         if (1 <= this.position && this.position <= 4) {
@@ -89,7 +92,10 @@ public class Tile {
     }
 
     /**
-     *
+     * Given the position on the board in checker notation, calculate the column position
+     * 
+     * This method is used for finding capture/jump moves.
+     * 
      */
     public void calculate_col() {
         int pos = this.position;
@@ -148,14 +154,15 @@ public class Tile {
 
     /**
      *
-     * @return
+     * @return true if checker present, false otherwise
      */
     public boolean hasChecker() {
         return hasChecker;
     }
 
     /**
-     *
+     * Set position of the tile to the given int
+     * 
      * @param newPosition
      */
     public void setPosition(int newPosition) {
@@ -164,7 +171,7 @@ public class Tile {
 
     /**
      *
-     * @return
+     * @return the position of the tile
      */
     public int getPosition() {
         return this.position;
@@ -172,13 +179,17 @@ public class Tile {
 
     /**
      *
-     * @return
+     * @return the current checker on the tile
      */
     public Checker getChecker() {
         return this.currentChecker;
     }
 
     /**
+     * 
+     * Reassign the given checker to take the position of the tile
+     * 
+     * Used during moves
      *
      * @param checker
      */
@@ -189,7 +200,10 @@ public class Tile {
     }
 
     /**
-     *
+     * Remove reference to the checker on the tile
+     * 
+     * Used when pieces are removed from the board, or moved to another position
+     * 
      */
     public void removeChecker() {
         currentChecker = null;

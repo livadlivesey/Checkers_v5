@@ -15,7 +15,6 @@ public class Game {
     int depthLimit;
 
     String difficulty;
-    
 
     Tile[] gameState;
 
@@ -43,6 +42,7 @@ public class Game {
         this.gameState = gameState;
         setDifficulty(difficulty);
     }
+
     /**
      * Updates the state representation with the current move
      *
@@ -59,12 +59,12 @@ public class Game {
             capturedChecker = move.getCapturedChecker();
             int capturedPos = capturedChecker.getPosition();
             state[capturedPos - 1].removeChecker();
-            
+
             // Regicide - if normal piece captures a king it is crowned 
             if (capturedChecker.isKing() && !move.getChecker().isKing()) {
-                state[newPos-1].getChecker().setKing();
+                state[newPos - 1].getChecker().setKing();
                 if (this.gameState.equals(state)) { //Checks if this is part of minimax or part of the game, in order to paint checker
-                    state[newPos-1].getChecker().paintKing();
+                    state[newPos - 1].getChecker().paintKing();
                 }
             }
             capturedChecker = null;
@@ -323,12 +323,13 @@ public class Game {
     }
 
     /**
-     * Retrieves the best move by finding the components in the current game State
-     * 
-     * This is because the bestMove is created from a temporary state in the minimax algorithm 
-     * so the references aren't accurate.
-     * 
-     * 
+     * Retrieves the best move by finding the components in the current game
+     * State
+     *
+     * This is because the bestMove is created from a temporary state in the
+     * minimax algorithm so the references aren't accurate.
+     *
+     *
      * @return
      */
     public Move getBestMove() {
@@ -342,13 +343,14 @@ public class Game {
         return best;
 
     }
-    
-        /**
-     * Iterates through the legal moves for the given checker, finding potential multi leg moves
-     * Uses a recursive call to get subsequent potential moves
-     * 
+
+    /**
+     * Iterates through the legal moves for the given checker, finding potential
+     * multi leg moves Uses a recursive call to get subsequent potential moves
+     *
      * @param checker The checker which is currently selected
-     * @return  multiLegMoves  A list of subsequent moves that could be taken by the checker
+     * @return multiLegMoves A list of subsequent moves that could be taken by
+     * the checker
      */
     public Move getMultiLeg2(Checker checker) {
         Move multi = null;
@@ -360,13 +362,14 @@ public class Game {
         }
         return multi;
     }
-    
-        /**
-     * Iterates through the legal moves for the given checker, finding potential multi leg moves
-     * Uses a recursive call to get subsequent potential moves
-     * 
+
+    /**
+     * Iterates through the legal moves for the given checker, finding potential
+     * multi leg moves Uses a recursive call to get subsequent potential moves
+     *
      * @param checker The checker which is currently selected
-     * @return  multiLegMoves  A list of subsequent moves that could be taken by the checker
+     * @return multiLegMoves A list of subsequent moves that could be taken by
+     * the checker
      */
     public boolean existsMultiLeg(Checker checker) {
         boolean multi = false;
@@ -378,7 +381,6 @@ public class Game {
         }
         return multi;
     }
-    
 
     /**
      *
@@ -427,15 +429,24 @@ public class Game {
         List<Move> moves;
         if (this.currentPlayer.equals("Computer")) {
             moves = getCompMoves(getAllLegalMoves(state));
+            for (Move capture : moves) {
+                if (capture.isCapturingMove() && !move.isCapturingMove()) {
+                    // If there is a legal move which is a capturing move and the user hasn't selected it, then return true
+                    forcedCapture = true;
+                    //System.out.println(capture);
+                }
+            }
         } else {
             moves = getUserMoves(getAllLegalMoves(state));
-        }
-        for (Move capture : moves) {
-            if (capture.isCapturingMove() && !move.isCapturingMove()) {
-                // If there is a legal move which is a capturing move and the user hasn't selected it, then return true
-                forcedCapture = true;
+            for (Move capture : moves) {
+                if (capture.isCapturingMove() && !move.isCapturingMove()) {
+                    // If there is a legal move which is a capturing move and the user hasn't selected it, then return true
+                    forcedCapture = true;
+                    //System.out.println(capture);
+                }
             }
         }
+
         return forcedCapture;
     }
 
@@ -472,95 +483,58 @@ public class Game {
     }
 
     /**
-     *
+     * The heuristic function for the minimax
+     * 
+     * There are weights for pieces in the state, and the weights depend on the difficulty of the game
+     * 
+     * 
      * @param state
      * @return
      */
-    public int calc_heuristic(Tile[] state) {
-        int human_score = 0;
-        int ai_score = 0;
-        for (Tile tile : state) {
-            if (tile.hasChecker()) {
-                Checker c = tile.getChecker();
-                if ("Computer".equals(c.getOwner())) {
-                    ai_score += 2;
-                }
-                if ("User".equals(c.getOwner())) {
-                    human_score += 2;
-                }
-                if (c.isKing()) {
-                    if ("Computer".equals(c.getOwner())) {
-                        // Additional points for a piece if it's a king, the opponent loses points
-                        ai_score += 3;
-                        human_score -= 5;
-
-                    }
-                    if ("User".equals(c.getOwner())) {
-                        human_score += 3;
-                        ai_score -= 5;
-                    }
-                } else {
-                    // Back row pieces only get points if they aren't Kings
-                    if (c.getRow() == 1 && "Computer".equals(c.getOwner())) {
-                        ai_score += 3;
-                    }
-                    if (c.getRow() == 8 && "User".equals(c.getOwner())) {
-                        human_score += 3;
-                    }
-                }
-            }
-        }
-        return ai_score - human_score;
-    }
-    
     public int evaluate(Tile[] state) {
-        int human_score=0;
-        int comp_score=0;
+        int human_score = 0;
+        int comp_score = 0;
         int piece_weight;
         int king_weight;
         int backrow_weight;
         int protected_weight;
-        int vulnerable;
         if (this.difficulty.equals("Easy")) {
             piece_weight = 2;
             king_weight = 3;
             backrow_weight = 2;
             protected_weight = 3;
-            vulnerable = -3;
         } else if (this.difficulty.equals("Intermediate")) {
             piece_weight = 2;
             king_weight = 3;
             backrow_weight = 2;
             protected_weight = 3;
-            vulnerable = -3;
         } else {
             piece_weight = 5;
             king_weight = 7;
             backrow_weight = 4;
             protected_weight = 3;
-            vulnerable = -3;   
         }
-        
-        for (Checker user: getUserCheckers(state)) {
+
+        for (Checker user : getUserCheckers(state)) {
             human_score += piece_weight;
             if (user.isKing()) {
                 human_score += king_weight;
             }
-            if (user.getRow()==8) {
+            if (user.getRow() == 8) {
                 human_score += backrow_weight;
             }
             if (user.isProtected(state)) { //If there are no neighbouring tiles free, protected
                 human_score += protected_weight;
-            }  else {
+            } else {
                 human_score -= 3;
-            }   
+            }
         }
-        for (Checker comp: getCompCheckers(state)) {
+        for (Checker comp : getCompCheckers(state)) {
             comp_score += piece_weight;
             if (comp.isKing()) {
                 comp_score += king_weight;
-            } 
-            if (comp.getRow()==1) {
+            }
+            if (comp.getRow() == 1) {
                 comp_score += backrow_weight;
             }
             if (comp.isProtected(state)) {
@@ -569,17 +543,17 @@ public class Game {
                 comp_score -= 3;
             }
         }
-        return comp_score - human_score;  
+        return comp_score - human_score;
     }
 
     private void setDifficulty(String difficulty) {
         if (difficulty.equals("Easy")) {
-            this.depthLimit = 5;
-            
+            this.depthLimit = 3;
+
         } else if (difficulty.equals("Intermediate")) {
-            this.depthLimit = 8;
+            this.depthLimit = 5;
         } else {
-            this.depthLimit = 10;
+            this.depthLimit = 7;
         }
         this.difficulty = difficulty;
     }
