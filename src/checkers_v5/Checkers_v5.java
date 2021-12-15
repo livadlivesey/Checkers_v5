@@ -34,7 +34,6 @@ public class Checkers_v5 extends Application {
         Parent root = loader.load();
         
         Scene scene = new Scene(root);
-        //scene.addEventFilter(MouseEvent.MOUSE_ENTERED, e -> System.out.println( e));
         stage.setTitle("Checkers");
         
         stage.setScene(scene);

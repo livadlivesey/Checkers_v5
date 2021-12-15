@@ -23,7 +23,11 @@ public class Tile {
     private int column;
     Rectangle rectangle;
 
-
+    /**
+     *
+     * @param position
+     * @param rectangle
+     */
     public Tile(int position, Rectangle rectangle) {
         hasChecker = false;
         currentChecker = null;
@@ -35,20 +39,35 @@ public class Tile {
         //calculate_col();
     }
     
+    /**
+     *
+     * @return
+     */
     public Rectangle getRectangle() {
         return this.rectangle;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getRow() {
         calculate_row();
         return this.row;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getCol() {
         calculate_col();
         return this.column;
     }
 
+    /**
+     *
+     */
     public void calculate_row() {
         if (1 <= this.position && this.position <= 4) {
             this.row = 1;
@@ -69,6 +88,9 @@ public class Tile {
         }
     }
 
+    /**
+     *
+     */
     public void calculate_col() {
         int pos = this.position;
         switch (pos) {
@@ -124,34 +146,51 @@ public class Tile {
         }
         }
 
-    
-
-    
-
-    
-
+    /**
+     *
+     * @return
+     */
     public boolean hasChecker() {
         return hasChecker;
     }
 
+    /**
+     *
+     * @param newPosition
+     */
     public void setPosition(int newPosition) {
         this.position = newPosition;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getPosition() {
         return this.position;
     }
 
+    /**
+     *
+     * @return
+     */
     public Checker getChecker() {
         return this.currentChecker;
     }
 
+    /**
+     *
+     * @param checker
+     */
     public void setChecker(Checker checker) {
         checker.move(this.position);
         currentChecker = checker;
         hasChecker = true;
     }
 
+    /**
+     *
+     */
     public void removeChecker() {
         currentChecker = null;
         hasChecker = false;

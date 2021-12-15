@@ -16,6 +16,11 @@ public class Move {
     Checker capturedChecker;
     boolean regicide;
 
+    /**
+     *
+     * @param checker
+     * @param destination
+     */
     public Move(Checker checker, Tile destination) {
         this.checker = checker;
         this.newTile = destination;
@@ -31,7 +36,6 @@ public class Move {
         /**
      *Returns true if the specified move involves regicide 
      * 
-     * @param move
      * @return
      */
     public boolean isRegicide() {
@@ -41,40 +45,70 @@ public class Move {
         return regicide;
     }
     
-    
-
+    /**
+     *
+     * @return
+     */
     public Checker getChecker() {
         return this.checker;
     }
 
-
+    /**
+     *
+     * @param c
+     */
     public void setCapturedChecker(Checker c) {
         this.capturedChecker = c;
         this.isCapturing = true;
     }
 
+    /**
+     *
+     * @param checker
+     * @param tile
+     */
     public void calcIsCapturingMove(Checker checker, Tile tile) {
         if (checker.getRow() == tile.getRow() + 2 || checker.getRow() == tile.getRow() - 2) {
             this.isCapturing = true;
         }
     }
 
+    /**
+     *
+     * @return
+     */
     public Checker getCapturedChecker() {
         return this.capturedChecker;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isCapturingMove() {
         return this.isCapturing;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getOriginalPos() {
         return this.originalPos;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getNewPos() {
         return this.newPos;
     }
 
+    /**
+     *
+     * @return
+     */
     public Tile getTile() {
         return this.newTile;
     }

@@ -18,15 +18,23 @@ public class Checker {
     private int position;
     private final String owner;
     private List<Integer> neighbours;
+    private List<Integer> surrounding;
     private int row;
     private int column;
     private final Circle circle;
 
+    /**
+     *
+     * @param position
+     * @param owner
+     * @param circle
+     */
     public Checker(int position, String owner, Circle circle) {
         this.owner = owner;
         this.position = position;
         this.isKing = false;
         this.circle = circle;
+        this.surrounding = new ArrayList<>();
         calculateNeighbouringPositions();
         calculate_row();
         calculate_col();
@@ -53,10 +61,14 @@ public class Checker {
     }
 
     /**
-     *
+     * Calculates the neighbouring positions for a checker, using checker notation
+     * 
+     * If the checker is a  king, keep all of them, if they're not a king, remove the positions which are 
+     * in the opposite direction to current play. 
+     * 
+     * 
      */
     public void calculateNeighbouringPositions() {
-        //List<Tile> neighbouringTiles = new ArrayList<Tile>();
         List<Integer> neighbouringPositions = new ArrayList<>();
         int pos = this.position;
         if (1 <= pos && pos < 4) {
@@ -88,6 +100,8 @@ public class Checker {
         } else if (pos == 29) {
             neighbouringPositions.add(pos - 4);
         }
+        
+        this.surrounding.addAll(neighbouringPositions);
         // If the checker isn't a king, then only add positions which are less than for user, or greater than for computer checkers
         if (!this.isKing()) {
             if (this.owner.equals("User")) {
@@ -106,6 +120,37 @@ public class Checker {
     public List<Integer> getNeighbouringPositions() {
         calculateNeighbouringPositions();
         return this.neighbours;
+    }
+
+    /**
+     * Checks if a checker is 'protected' for use in heuristic function
+     * 
+     * A checker is classed as being protected if the surrounding tiles 
+     * are occupied by the player's own checkers
+     * 
+     * @param state
+     * @return
+     */
+    public boolean isProtected(Tile[] state) {
+        int count = 0;
+        for (Integer i : this.surrounding) {
+            Tile t = state[i - 1];
+            if (t.hasChecker() && t.getChecker().getOwner().equals(this.owner)) {
+                count++;
+            }
+        }
+        return count == this.surrounding.size(); //If every neighbouring tile is occupied by owner checker
+    }
+    
+    /**
+     * 
+     * Simply uses the opposite of isProtected in order 
+     *
+     * @param state
+     * @return
+     */
+    public boolean isVulnerable(Tile[] state) {
+        return !isProtected(state);
     }
 
     /**
@@ -137,14 +182,20 @@ public class Checker {
     public void setKing() {
         this.isKing = true;
     }
-    
+
+    /**
+     *
+     */
     public void paintKing() {
         this.circle.setStroke(Color.GOLD);
         this.circle.setStrokeDashOffset(1.0);
         this.circle.setStrokeWidth(3.0);
     }
 
-
+    /**
+     *
+     * @return
+     */
     public String getOwner() {
         return this.owner;
     }

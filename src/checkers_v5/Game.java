@@ -12,8 +12,10 @@ import java.util.List;
 public class Game {
 
     // instance variables - replace the example below with your own
-    int deCount, seCount, pCount;
     int depthLimit;
+
+    String difficulty;
+    
 
     Tile[] gameState;
 
@@ -25,6 +27,7 @@ public class Game {
 
     String currentPlayer;
     Move bestMove;
+    List<Move> multiLegMoves = new ArrayList<>();
 
     /**
      * Constructor for objects of class Game
@@ -35,8 +38,8 @@ public class Game {
      * notation
      * @param difficulty
      */
-    public Game(Tile[] gameState, int difficulty) {
-        currentPlayer = "User";
+    public Game(Tile[] gameState, String difficulty) {
+        this.currentPlayer = "User";
         this.gameState = gameState;
         setDifficulty(difficulty);
     }
@@ -141,20 +144,28 @@ public class Game {
         return allMoves;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getCurrentPlayer() {
         return this.currentPlayer;
     }
 
+    /**
+     *
+     * @return
+     */
     public List<Move> getAllHints() {
         List<Move> potentialMoves = new ArrayList<>();
         if (this.currentPlayer.equals("User")) {
-            for (Checker checker : getUserCheckers()) {
+            for (Checker checker : getUserCheckers(gameState)) {
                 for (Move move : getUserMoves(getLegalMoves(checker, gameState))) {
                     potentialMoves.add(move);
                 }
             }
         } else {
-            for (Checker checker : getCompCheckers()) {
+            for (Checker checker : getCompCheckers(gameState)) {
                 for (Move move : getCompMoves(getLegalMoves(checker, gameState))) {
                     potentialMoves.add(move);
                 }
@@ -164,29 +175,44 @@ public class Game {
         return potentialMoves;
     }
 
-    public List<Checker> getUserCheckers() {
+    /**
+     *
+     * @param state
+     * @return
+     */
+    public List<Checker> getUserCheckers(Tile[] state) {
         List<Checker> userCheckers = new ArrayList<>();
-        for (Tile t : gameState) {
-            if (t.getChecker().getOwner().equals("User")) {
+        for (Tile t : state) {
+            if (t.hasChecker() && t.getChecker().getOwner().equals("User")) {
                 userCheckers.add(t.getChecker());
             }
         }
         return userCheckers;
     }
 
-    public List<Checker> getCompCheckers() {
+    /**
+     *
+     * @param state
+     * @return
+     */
+    public List<Checker> getCompCheckers(Tile[] state) {
         List<Checker> compCheckers = new ArrayList<>();
-        for (Tile t : gameState) {
-            if (t.getChecker().getOwner().equals("Computer")) {
+        for (Tile t : state) {
+            if (t.hasChecker() && t.getChecker().getOwner().equals("Computer")) {
                 compCheckers.add(t.getChecker());
             }
         }
         return compCheckers;
     }
 
-    public List<Checker> getCheckers() {
+    /**
+     *
+     * @param state
+     * @return
+     */
+    public List<Checker> getCheckers(Tile[] state) {
         List<Checker> allCheckers = new ArrayList<>();
-        for (Tile t : gameState) {
+        for (Tile t : state) {
             if (t.hasChecker()) {
                 allCheckers.add(t.getChecker());
             }
@@ -197,7 +223,6 @@ public class Game {
     /**
      * Changes the string representing the current player to alternate turns
      *
-     * @param currentPlayer
      */
     public void nextTurn() {
         if (this.currentPlayer.equals("User")) {
@@ -207,13 +232,19 @@ public class Game {
         }
     }
 
-    public void startEval() {
-        deCount = 0;
-        seCount = 0;
-        pCount = 0;
-        minimaxAB(depthLimit, currentPlayer, Integer.MIN_VALUE, Integer.MAX_VALUE, cloneState(gameState));
+    /**
+     *
+     * @param currentPlayer
+     */
+    public void startEval(String currentPlayer) {
+        minimaxAB(this.depthLimit, currentPlayer, Integer.MIN_VALUE, Integer.MAX_VALUE, cloneState(gameState));
     }
 
+    /**
+     *
+     * @param currentState
+     * @return
+     */
     public Tile[] cloneState(Tile[] currentState) {
         Tile[] state = new Tile[32];
         for (int i = 0; i < currentState.length; i++) {
@@ -243,19 +274,18 @@ public class Game {
             bestScore = Integer.MIN_VALUE;
         }
         if (depth == 0 || getAllLegalMoves(state).isEmpty()) {
-            //Check if the tree has been traversed to specified level, or node is terminal node
-            return calc_heuristic(state); // return static evaluation of node
-
+            //Check if the tree has been traversed to specified level, or node is terminal node, or the game is over
+            if (currentPlayer.equals("Computer")) {
+                return evaluate(state); // return static evaluation of node
+            } else {
+                return -evaluate(state); // return inverse as the calculation function is based on the AI
+            }
         }
         if (currentPlayer.equals("User")) {
             Tile[] tempState = cloneState(state);
             List<Move> legalMoves = getAllLegalMoves(tempState);
             List<Move> userMoves = getUserMoves(legalMoves); // Generate available moves for player
             for (Move move : userMoves) {
-                Checker moving = move.getChecker().cloneChecker();
-                Tile newTile = tempState[move.getNewPos() - 1]; //TODO: clone tile?
-                deCount++;
-                //move(moving, newTile, tempState); //place piece at first available position
                 this.move(move, tempState);
                 int score = minimaxAB(depth - 1, "Computer", alpha, beta, tempState); // start recursion
                 bestScore = Math.min(bestScore, score); //get best score
@@ -265,7 +295,6 @@ public class Game {
                 }
                 //Perform pruning if appropriate
                 if (alpha >= beta) {
-                    pCount++;
                     break;
                 }
             }
@@ -277,10 +306,6 @@ public class Game {
             List<Move> legalMoves = getAllLegalMoves(tempState);
             List<Move> compMoves = getCompMoves(legalMoves);
             for (Move move : compMoves) {
-                deCount++;
-                Checker moving = move.getChecker().cloneChecker();
-                Tile newTile = tempState[move.getNewPos() - 1];
-                //move(moving, newTile, tempState);
                 this.move(move, tempState);
                 int score = minimaxAB(depth - 1, "User", alpha, beta, tempState);
                 bestScore = Math.max(score, bestScore);
@@ -289,7 +314,6 @@ public class Game {
                     tempBestMove = move;
                 }
                 if (alpha >= beta) {
-                    pCount++;
                     break;
                 }
             }
@@ -299,7 +323,12 @@ public class Game {
     }
 
     /**
-     *
+     * Retrieves the best move by finding the components in the current game State
+     * 
+     * This is because the bestMove is created from a temporary state in the minimax algorithm 
+     * so the references aren't accurate.
+     * 
+     * 
      * @return
      */
     public Move getBestMove() {
@@ -314,28 +343,14 @@ public class Game {
 
     }
     
-    /**
-     *
-     * @param checker
-     * @return
+        /**
+     * Iterates through the legal moves for the given checker, finding potential multi leg moves
+     * Uses a recursive call to get subsequent potential moves
+     * 
+     * @param checker The checker which is currently selected
+     * @return  multiLegMoves  A list of subsequent moves that could be taken by the checker
      */
-    public boolean existsMultiLeg(Checker checker) {
-        boolean existsMultileg = false;
-        List<Move> multileg = getLegalMoves(checker, this.gameState);
-        for (Move capture : multileg) {
-            if (capture.getChecker().equals(checker) && capture.isCapturingMove()) {
-                existsMultileg = true;
-            }
-        }
-        return existsMultileg;
-    }
-
-    /**
-     *
-     * @param checker
-     * @return
-     */
-    public Move getMultiLeg(Checker checker) {
+    public Move getMultiLeg2(Checker checker) {
         Move multi = null;
         List<Move> multileg = getLegalMoves(checker, this.gameState);
         for (Move capture : multileg) {
@@ -345,6 +360,25 @@ public class Game {
         }
         return multi;
     }
+    
+        /**
+     * Iterates through the legal moves for the given checker, finding potential multi leg moves
+     * Uses a recursive call to get subsequent potential moves
+     * 
+     * @param checker The checker which is currently selected
+     * @return  multiLegMoves  A list of subsequent moves that could be taken by the checker
+     */
+    public boolean existsMultiLeg(Checker checker) {
+        boolean multi = false;
+        List<Move> multileg = getLegalMoves(checker, this.gameState);
+        for (Move capture : multileg) {
+            if (capture.getChecker().equals(checker) && capture.isCapturingMove()) {
+                multi = true;
+            }
+        }
+        return multi;
+    }
+    
 
     /**
      *
@@ -385,11 +419,17 @@ public class Game {
     /**
      *
      * @param move
+     * @param state
      * @return
      */
-    public boolean isForcedCapture(Move move) {
+    public boolean isForcedCapture(Move move, Tile[] state) {
         boolean forcedCapture = false;
-        List<Move> moves = getUserMoves(getAllLegalMoves(this.gameState));
+        List<Move> moves;
+        if (this.currentPlayer.equals("Computer")) {
+            moves = getCompMoves(getAllLegalMoves(state));
+        } else {
+            moves = getUserMoves(getAllLegalMoves(state));
+        }
         for (Move capture : moves) {
             if (capture.isCapturingMove() && !move.isCapturingMove()) {
                 // If there is a legal move which is a capturing move and the user hasn't selected it, then return true
@@ -399,6 +439,11 @@ public class Game {
         return forcedCapture;
     }
 
+    /**
+     *
+     * @param moves
+     * @return
+     */
     public List<Move> getUserMoves(List<Move> moves) {
         List<Move> userMoves = new ArrayList<>();
         for (int i = 0; i < moves.size(); i++) {
@@ -410,6 +455,11 @@ public class Game {
         return userMoves;
     }
 
+    /**
+     *
+     * @param moves
+     * @return
+     */
     public List<Move> getCompMoves(List<Move> moves) {
         List<Move> compMoves = new ArrayList<>();
         for (int i = 0; i < moves.size(); i++) {
@@ -421,6 +471,11 @@ public class Game {
         return compMoves;
     }
 
+    /**
+     *
+     * @param state
+     * @return
+     */
     public int calc_heuristic(Tile[] state) {
         int human_score = 0;
         int ai_score = 0;
@@ -457,30 +512,102 @@ public class Game {
         }
         return ai_score - human_score;
     }
-
-    private void setDifficulty(int difficulty) {
-        this.depthLimit = difficulty;
+    
+    public int evaluate(Tile[] state) {
+        int human_score=0;
+        int comp_score=0;
+        int piece_weight;
+        int king_weight;
+        int backrow_weight;
+        int protected_weight;
+        int vulnerable;
+        if (this.difficulty.equals("Easy")) {
+            piece_weight = 2;
+            king_weight = 3;
+            backrow_weight = 2;
+            protected_weight = 3;
+            vulnerable = -3;
+        } else if (this.difficulty.equals("Intermediate")) {
+            piece_weight = 2;
+            king_weight = 3;
+            backrow_weight = 2;
+            protected_weight = 3;
+            vulnerable = -3;
+        } else {
+            piece_weight = 5;
+            king_weight = 7;
+            backrow_weight = 4;
+            protected_weight = 3;
+            vulnerable = -3;   
+        }
+        
+        for (Checker user: getUserCheckers(state)) {
+            human_score += piece_weight;
+            if (user.isKing()) {
+                human_score += king_weight;
+            }
+            if (user.getRow()==8) {
+                human_score += backrow_weight;
+            }
+            if (user.isProtected(state)) { //If there are no neighbouring tiles free, protected
+                human_score += protected_weight;
+            }  else {
+                human_score -= 3;
+            }   
+        }
+        for (Checker comp: getCompCheckers(state)) {
+            comp_score += piece_weight;
+            if (comp.isKing()) {
+                comp_score += king_weight;
+            } 
+            if (comp.getRow()==1) {
+                comp_score += backrow_weight;
+            }
+            if (comp.isProtected(state)) {
+                comp_score += protected_weight;
+            } else {
+                comp_score -= 3;
+            }
+        }
+        return comp_score - human_score;  
     }
 
+    private void setDifficulty(String difficulty) {
+        if (difficulty.equals("Easy")) {
+            this.depthLimit = 5;
+            
+        } else if (difficulty.equals("Intermediate")) {
+            this.depthLimit = 8;
+        } else {
+            this.depthLimit = 10;
+        }
+        this.difficulty = difficulty;
+    }
+
+    /**
+     *
+     * @param state
+     * @return
+     */
     public boolean compWin(Tile[] state) {
         int i = 0;
-        //Checker[] user = Checker[12];
         boolean compWin = false;
         for (Tile t : state) {
             if (t.hasChecker() && t.getChecker().getOwner().equals("User")) {
                 i++;
-                //user[i] = t.getChecker();
-
             }
         }
-        if (i < 1) {
-
+        if (i == 0) {
             compWin = true;
         }
-
         return compWin;
     }
 
+    /**
+     *
+     * @param state
+     * @return
+     */
     public boolean userWin(Tile[] state) {
         int i = 0;
         boolean userWin = false;
@@ -489,13 +616,17 @@ public class Game {
                 i++;
             }
         }
-        if (i < 1) {
+        if (i == 0) {
             userWin = true;
         }
-
         return userWin;
     }
 
+    /**
+     *
+     * @param state
+     * @return
+     */
     public boolean isGameOver(Tile[] state) {
         return userWin(state) || compWin(state);
     }
