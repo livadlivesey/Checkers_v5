@@ -2,6 +2,7 @@ package checkers_v5;
 
 import java.util.ArrayList;
 import java.util.List;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
 /**
@@ -104,6 +105,9 @@ public class Checker {
         } else if ("User".equals(this.owner) && this.row == 1) {
             setKing();
         }
+        this.circle.setStroke(Color.GOLD);
+        this.circle.setStrokeDashOffset(1.0);
+        this.circle.setStrokeWidth(3.0);
         return this.isKing;
     }
     

@@ -14,7 +14,7 @@ public class Move {
     Tile newTile;
     boolean isCapturing = false;
     Checker capturedChecker;
-    //Tile[] state;
+    boolean regicide;
 
     public Move(Checker checker, Tile destination) {
         this.checker = checker;
@@ -23,7 +23,22 @@ public class Move {
         this.newPos = destination.getPosition();
         this.isCapturing = false;
         this.capturedChecker = null;
+        this.regicide = isRegicide();
+        
         //this.state = state;
+    }
+    
+        /**
+     *Returns true if the specified move involves regicide 
+     * 
+     * @param move
+     * @return
+     */
+    public boolean isRegicide() {
+        if (this.isCapturing && this.capturedChecker.isKing() && !this.checker.isKing()) {
+            this.regicide = true;
+        }
+        return regicide;
     }
     
     

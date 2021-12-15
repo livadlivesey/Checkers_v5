@@ -31,7 +31,7 @@
                         </Menu>
                         <Menu id="helpMenu" mnemonicParsing="false" style="-fx-background-color: RED;" text="Help!">
                             <items>
-                        <MenuItem mnemonicParsing="false" onAction="#getAllHints" text="Hint: All available moves" />
+                        
                                 <MenuItem mnemonicParsing="false" onAction="#getBestHint" text="Hint: Best available move" />
                             </items>
                         </Menu>
@@ -170,9 +170,9 @@
                 <Insets />
             </VBox.margin>
         </VBox> 
-        <HBox id="gameText" prefHeight="44.0" prefWidth="700.0" style="-fx-border-width: 5; -fx-border-color: BLACK; -fx-padding: 5;" translateY="-150.0">
+        <HBox  prefHeight="44.0" prefWidth="700.0" style="-fx-border-width: 5; -fx-border-color: BLACK; -fx-padding: 5;" translateY="-150.0">
             <children>
-                <Text lineSpacing="5.0" strokeType="OUTSIDE" strokeWidth="0.0" text="It's Your Turn!">
+                <Text fx:id="gameText" lineSpacing="5.0" strokeType="OUTSIDE" strokeWidth="0.0" text="It's Your Turn!">
                     <font>
                         <Font size="20.0" />
                     </font>

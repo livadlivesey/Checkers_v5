@@ -45,24 +45,13 @@ public class Game {
         this.gameState = gameState;
         setDifficulty(difficulty);
     }
-
     /**
      * Updates the state representation with the current move
      *
-     * @param checker The checker that has been moved
-     * @param newTile
+     * @param move
      * @param state
      */
-    public void move(Checker checker, Tile newTile, Tile[] state) {
-        //System.out.println("MOVING: "+checker.toString());
-        int oldPos = checker.getPosition();
-        int newPos = newTile.getPosition();
-        checker.move(newPos);
-        state[newPos - 1].setChecker(checker);
-        state[oldPos - 1].removeChecker();
-    }
-
-    public void move2(Move move, Tile[] state) {
+    public void move(Move move, Tile[] state) {
         int oldPos = move.getOriginalPos();
         int newPos = move.getNewPos();
         state[newPos - 1].setChecker(move.getChecker());
@@ -72,19 +61,15 @@ public class Game {
             capturedChecker = move.getCapturedChecker();
             int capturedPos = capturedChecker.getPosition();
             state[capturedPos - 1].removeChecker();
-
-            if (this.currentPlayer.equals("User")) {
-                System.out.println("capturedPos: " + capturedPos);
+            
+            // Regicide - if normal piece captures a king it is crowned 
+            if (capturedChecker.isKing() && !move.getChecker().isKing()) {
+                state[newPos-1].getChecker().setKing();
             }
-
             capturedChecker = null;
             move.getChecker().move(newPos);
+        }
 
-        }
-        if (this.currentPlayer.equals("User")) {
-            System.out.println("oldPos: " + oldPos);
-            System.out.println("newPos: " + newPos);
-        }
     }
 
     /**
@@ -93,7 +78,6 @@ public class Game {
      *
      * @param current
      * @param state
-     * @param currentPlayer
      * @return List of tile objects which can be moved to
      */
     public List<Move> getLegalMoves(Checker current, Tile[] state) {
@@ -292,7 +276,7 @@ public class Game {
                 Tile newTile = tempState[move.getNewPos() - 1]; //TODO: clone tile?
                 deCount++;
                 //move(moving, newTile, tempState); //place piece at first available position
-                this.move2(move, tempState);
+                this.move(move, tempState);
                 int score = minimaxAB(depth - 1, "Computer", alpha, beta, tempState); // start recursion
                 bestScore = Math.min(bestScore, score); //get best score
                 beta = Math.min(beta, score);
@@ -322,7 +306,7 @@ public class Game {
                 Checker moving = move.getChecker().cloneChecker();
                 Tile newTile = tempState[move.getNewPos() - 1];
                 //move(moving, newTile, tempState);
-                this.move2(move, tempState);
+                this.move(move, tempState);
                 int score = minimaxAB(depth - 1, "User", alpha, beta, tempState);
                 bestScore = Math.max(score, bestScore);
                 alpha = Math.max(alpha, score);
@@ -359,6 +343,66 @@ public class Game {
 
         return best;
 
+    }
+    
+
+
+    public boolean existsMultiLeg(Checker checker) {
+        boolean existsMultileg = false;
+        List<Move> multileg = getLegalMoves(checker, this.gameState);
+        for (Move capture : multileg) {
+            if (capture.getChecker().equals(checker) && capture.isCapturingMove()) {
+                existsMultileg = true;
+            }
+        }
+        return existsMultileg;
+    }
+
+    public Move getMultiLeg(Checker checker) {
+        Move multi = null;
+        List<Move> multileg = getLegalMoves(checker, this.gameState);
+        for (Move capture : multileg) {
+            if (capture.getChecker().equals(checker) && capture.isCapturingMove()) {
+                multi = capture;
+            }
+        }
+        return multi;
+    }
+
+    public boolean isValidUserMove(Checker checker, Tile tile) {
+        boolean validMove = false;
+        List<Move> moves = getLegalMoves(checker, gameState);
+        for (Move move : moves) {
+            if (move.getChecker().equals(checker) && move.getTile().equals(tile)) {
+                validMove = true;
+                break;
+            }
+        }
+        return validMove;
+    }
+
+    public Move getValidUserMove(Checker checker, Tile tile) {
+        Move validMove = null;
+        List<Move> moves = getLegalMoves(checker, gameState);
+        for (Move move : moves) {
+            if (move.getChecker().equals(checker) && move.getTile().equals(tile)) {
+                validMove = move;
+                break;
+            }
+        }
+        return validMove;
+    }
+
+    public boolean isForcedCapture(Move move) {
+        boolean forcedCapture = false;
+        List<Move> moves = getUserMoves(getAllLegalMoves(this.gameState));
+        for (Move capture : moves) {
+            if (capture.isCapturingMove() && !capture.equals(move)) {
+                // If there is a legal move which is a capturing move and the user hasn't selected it, then return true
+                forcedCapture = true;
+            }
+        }
+        return forcedCapture;
     }
 
     public List<Move> getUserMoves(List<Move> moves) {
