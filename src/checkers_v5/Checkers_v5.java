@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package checkers_v5;
 
 import java.util.List;
@@ -12,11 +7,10 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
-import checkers_v5.Checkers_controller;
 
 /**
  *
- * @author liv
+ * @author 215865
  */
 public class Checkers_v5 extends Application {
     List<Circle> user_checkers;    
@@ -28,17 +22,15 @@ public class Checkers_v5 extends Application {
     
     @Override
     public void start(Stage stage) throws Exception {
+        // Load the FXML file
         loader = new FXMLLoader(getClass().getResource("Checkers_FXML.fxml"));
-        
+        // Create a reference toe the controller
         userController = loader.getController();
         Parent root = loader.load();
-        
         Scene scene = new Scene(root);
         stage.setTitle("Checkers");
-        
         stage.setScene(scene);
         stage.show();
-
     }
 
     /**
