@@ -12,6 +12,7 @@ import javafx.scene.shape.Circle;
  * @version (a version number or a date)
  */
 public class Checker {
+
     // instance variables - replace the example below with your own
     private boolean isKing;
     private int position;
@@ -30,19 +31,30 @@ public class Checker {
         calculate_row();
         calculate_col();
     }
-    
+
+    /**
+     *
+     * @return
+     */
     public Circle getCircle() {
         return this.circle;
     }
-    
+
+    /**
+     *
+     * @return
+     */
     public Checker cloneChecker() {
         Checker clone = new Checker(this.position, this.owner, this.circle);
         if (this.isKing) {
-            clone.setKing();            
+            clone.setKing();
         }
         return clone;
     }
 
+    /**
+     *
+     */
     public void calculateNeighbouringPositions() {
         //List<Tile> neighbouringTiles = new ArrayList<Tile>();
         List<Integer> neighbouringPositions = new ArrayList<>();
@@ -84,20 +96,30 @@ public class Checker {
                 neighbouringPositions.removeIf(n -> (n < pos));
             }
         }
-
         this.neighbours = neighbouringPositions;
-
     }
 
+    /**
+     *
+     * @return
+     */
     public List<Integer> getNeighbouringPositions() {
         calculateNeighbouringPositions();
         return this.neighbours;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getPosition() {
         return this.position;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isKing() {
         //if reached the opposite end of board
         if ("Computer".equals(this.owner) && this.row == 8) {
@@ -105,22 +127,27 @@ public class Checker {
         } else if ("User".equals(this.owner) && this.row == 1) {
             setKing();
         }
-        this.circle.setStroke(Color.GOLD);
-        this.circle.setStrokeDashOffset(1.0);
-        this.circle.setStrokeWidth(3.0);
+
         return this.isKing;
     }
-    
-    
 
+    /**
+     *
+     */
     public void setKing() {
         this.isKing = true;
     }
+    
+    public void paintKing() {
+        this.circle.setStroke(Color.GOLD);
+        this.circle.setStrokeDashOffset(1.0);
+        this.circle.setStrokeWidth(3.0);
+    }
+
 
     public String getOwner() {
         return this.owner;
     }
-    
 
     /**
      * Moves the current piece to the specified position
@@ -141,15 +168,26 @@ public class Checker {
         String s = "[Position: " + this.position + ", Owner: " + this.owner + ", King: " + this.isKing + ", Neighbours: " + this.neighbours + "]";
         return s;
     }
-    
+
+    /**
+     *
+     * @return
+     */
     public int getRow() {
         return this.row;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getCol() {
         return this.column;
     }
 
+    /**
+     *
+     */
     public void calculate_row() {
         if (1 <= this.position && this.position <= 4) {
             this.row = 1;
@@ -170,6 +208,9 @@ public class Checker {
         }
     }
 
+    /**
+     *
+     */
     public void calculate_col() {
         int pos = this.position;
         switch (pos) {
@@ -223,9 +264,6 @@ public class Checker {
             default:
                 break;
         }
-        }
-    
-
-    
+    }
 
 }

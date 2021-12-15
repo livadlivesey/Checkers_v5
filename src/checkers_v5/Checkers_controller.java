@@ -3,8 +3,6 @@ package checkers_v5;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Timer;
@@ -21,8 +19,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
-import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
@@ -37,7 +33,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
-import javafx.scene.transform.Translate;
 import javafx.util.Duration;
 
 /**
@@ -48,11 +43,6 @@ public class Checkers_controller implements Initializable {
 
     @FXML
     private VBox root;
-
-    @FXML
-    private HBox hbox;
-    @FXML
-    private VBox vbox;
 
     @FXML
     private Text gameText;
@@ -199,8 +189,6 @@ public class Checkers_controller implements Initializable {
     @FXML
     private Rectangle pos32;
 
-    private final List<Pane> panes = new ArrayList<>();
-
     ObservableList<Circle> comp_checkers = FXCollections.observableArrayList();
 
     ObservableList<Circle> user_checkers = FXCollections.observableArrayList();
@@ -246,15 +234,6 @@ public class Checkers_controller implements Initializable {
         blackTiles = new ArrayList<>();
         gameState = new Tile[32];
         ongoingMove = false;
-
-        panes.add(row0);
-        panes.add(row1);
-        panes.add(row2);
-        panes.add(row3);
-        panes.add(row4);
-        panes.add(row5);
-        panes.add(row6);
-        panes.add(row7);
 
         user_checkers.add(user_1);
         user_checkers.add(user_2);
@@ -373,22 +352,29 @@ public class Checkers_controller implements Initializable {
         checkerShadow.setColor(Color.web("#006666"));
     }
 
+    /**
+     *
+     * @throws IOException
+     */
     @FXML
     public void newGame() throws IOException {
-            try {
+        try {
 
-                root = FXMLLoader.load(getClass().getResource("Checkers_FXML.fxml"));
-                rectangleGroup.getScene().setRoot(root);
-            } catch (IOException ex) {
-                Logger.getLogger(Checkers_controller.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        
+            root = FXMLLoader.load(getClass().getResource("Checkers_FXML.fxml"));
+            rectangleGroup.getScene().setRoot(root);
+        } catch (IOException ex) {
+            Logger.getLogger(Checkers_controller.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
     }
 
+    /**
+     *
+     */
     @FXML
     public void getBestHint() {
         model.startEval();
-        bestMove = model.getBestMove2();
+        bestMove = model.getBestMove();
         Checker bestChecker = bestMove.getChecker();
         Tile bestTile = bestMove.getTile();
         selectedChecker = bestChecker.getCircle();
@@ -399,6 +385,9 @@ public class Checkers_controller implements Initializable {
         selectedTile.setOpacity(1.0);
     }
 
+    /**
+     *
+     */
     @FXML
     public void showRules() {
         Alert rules = new Alert(AlertType.INFORMATION);
@@ -408,6 +397,10 @@ public class Checkers_controller implements Initializable {
         rules.showAndWait();
     }
 
+    /**
+     *
+     * @param event
+     */
     @FXML
     public void selectChecker(MouseEvent event) {
         if (ongoingMove && selectedChecker != null) {
@@ -429,7 +422,6 @@ public class Checkers_controller implements Initializable {
             //Add an effect to all the possible moves if the level is selected as Easy
             if (level == 1 || level == 1 || level == 3) {
                 potentialMoves = (model.getLegalMoves(convertCircle(selectedChecker), model.gameState));
-                System.out.println(" Available User Moves: " + potentialMoves);
                 for (Move move : potentialMoves) {
                     Tile t = move.getTile();
                     t.getRectangle().setEffect(tileShadow);
@@ -508,7 +500,6 @@ public class Checkers_controller implements Initializable {
                 Tile t = convertRectangle(selectedTile);
                 if (model.isValidUserMove(c, t)) {
                     currentMove = model.getValidUserMove(c, t);
-                    System.out.println("User Move: " + currentMove);
 
                     //If regicide
                     if (currentMove.isRegicide()) {
@@ -549,14 +540,11 @@ public class Checkers_controller implements Initializable {
                     model.nextTurn();
                     // Change text value and only move opponent piece after delay
                     Timeline timeline = new Timeline();
-                    if (model.getCurrentPlayer().equals("Computer")) {
-                        timeline.getKeyFrames().add(new KeyFrame(Duration.millis(2000), new KeyValue(gameText.textProperty(), "AI is thinking...")));
-                    }
+                    timeline.getKeyFrames().add(new KeyFrame(Duration.millis(2000), new KeyValue(gameText.textProperty(), "AI is thinking...")));
                     timeline.play();
                     timeline.setOnFinished(finish -> {
                         moveCompChecker();
                     });
-
                 }
             } else {
                 Alert alert = new Alert(AlertType.WARNING, " ", ButtonType.OK);
@@ -574,16 +562,17 @@ public class Checkers_controller implements Initializable {
         }
         ongoingMove = false;
         updateStates();
+        
 
     }
 
-    private void moveCompChecker() {
-        model.startEval();
-        //System.out.println("\n SE: " + model.seCount + " DE: " + model.deCount + " P: " + model.pCount);
-        System.out.print("AI Move: " + model.getBestMove2());
-
+    /**
+     *
+     */
+    public void moveCompChecker() {
         // Retrieve best move from model
-        bestMove = model.getBestMove2();
+        model.startEval();
+        bestMove = model.getBestMove();
         Checker bestChecker = bestMove.getChecker();
         Tile bestTile = bestMove.getTile();
         selectedChecker = bestChecker.getCircle();
@@ -600,26 +589,29 @@ public class Checkers_controller implements Initializable {
             deleteChecker(convertChecker(bestMove.getCapturedChecker()));
             //Multi leg capturing
             // Re evaluate board
-            model.startEval();
-            // If the best move is with the same checker and is a capturing move, carry it out
-            if (model.getBestMove2().getChecker().equals(bestChecker) && model.getBestMove2().isCapturingMove()) {
-                selectedTile = model.getBestMove2().getTile().getRectangle();
+//            model.startEval();
+//            // If the best move is with the same checker and is a capturing move, carry it out
+//            if (model.getBestMove().getChecker().equals(bestChecker) && model.getBestMove().isCapturingMove()) {
+//                selectedTile = model.getBestMove().getTile().getRectangle();
+//                move_position(selectedChecker, selectedTile);
+//                model.move(model.getBestMove(), model.gameState);
+//            }
+            while (model.existsMultiLeg(bestChecker)) {
+                currentMove = model.getMultiLeg(bestChecker);
+                selectedTile = currentMove.getTile().getRectangle();
                 move_position(selectedChecker, selectedTile);
-                model.move(model.getBestMove2(), model.gameState);
+                model.move(currentMove, model.gameState);
             }
         }
         model.nextTurn();
+        gameText.setText("It's your turn!");
         updateStates();
         gameOver();
-        gameText.setText("It's your turn to move!");
     }
 
     /**
      * Identifies the tile that the selected checker is currently occupying
-     *
-     * TODO: see if holding a representation of the states - where each position
-     * has corresponding tile is better
-     *
+     * 
      * @param event
      * @return
      */
@@ -637,6 +629,9 @@ public class Checkers_controller implements Initializable {
 
     }
 
+    /**
+     *
+     */
     public void gameOver() {
         String winner;
         if (model.isGameOver(model.gameState)) {
@@ -646,7 +641,7 @@ public class Checkers_controller implements Initializable {
                 winner = "You!";
             }
             Alert alert = new Alert(AlertType.WARNING, " ", ButtonType.OK);
-            alert.setContentText("The game is over, the winner is: "+ winner);
+            alert.setContentText("The game is over, the winner is: " + winner);
             alert.setHeaderText("Game Over");
             alert.setTitle("Game Over");
             alert.showAndWait();
@@ -659,7 +654,6 @@ public class Checkers_controller implements Initializable {
      *
      * @param currentChecker
      * @param newPosition
-     * @return
      */
     public void move_position(Circle currentChecker, Rectangle newPosition) {
 
@@ -737,6 +731,11 @@ public class Checkers_controller implements Initializable {
         currentMove = null;
     }
 
+    /**
+     *
+     * @param c
+     * @return
+     */
     public Checker convertCircle(Circle c) {
         int i = 0;
         for (Tile tile : model.gameState) {
@@ -748,6 +747,11 @@ public class Checkers_controller implements Initializable {
         return model.gameState[i - 1].getChecker();
     }
 
+    /**
+     *
+     * @param r
+     * @return
+     */
     public Tile convertRectangle(Rectangle r) {
         int i = 0;
         for (Tile tile : model.gameState) {
@@ -759,14 +763,28 @@ public class Checkers_controller implements Initializable {
         return model.gameState[i - 1];
     }
 
+    /**
+     *
+     * @param t
+     * @return
+     */
     public Rectangle convertTile(Tile t) {
         return t.getRectangle();
     }
 
+    /**
+     *
+     * @param checker
+     * @return
+     */
     public Circle convertChecker(Checker checker) {
         return checker.getCircle();
     }
 
+    /**
+     *
+     * @param captured
+     */
     public void deleteChecker(Circle captured) {
         for (int i = 0; i < rectangleGroup.getChildren().size(); i++) {
             Pane p = (Pane) rectangleGroup.getChildren().get(i);
@@ -781,6 +799,9 @@ public class Checkers_controller implements Initializable {
         }
     }
 
+    /**
+     *
+     */
     public Checkers_controller() {
 
     }

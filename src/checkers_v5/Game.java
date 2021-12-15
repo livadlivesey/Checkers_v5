@@ -1,11 +1,7 @@
 package checkers_v5;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Hashtable;
 import java.util.List;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
 
 /**
  * Write a description of class Game here.
@@ -20,7 +16,6 @@ public class Game {
     int depthLimit;
 
     Tile[] gameState;
-    List<MovesAndScores> successorEvaluations;
 
     //To reference current objects
     Checker selectedChecker;
@@ -65,6 +60,9 @@ public class Game {
             // Regicide - if normal piece captures a king it is crowned 
             if (capturedChecker.isKing() && !move.getChecker().isKing()) {
                 state[newPos-1].getChecker().setKing();
+                if (this.gameState.equals(state)) { //Checks if this is part of minimax or part of the game, in order to paint checker
+                    state[newPos-1].getChecker().paintKing();
+                }
             }
             capturedChecker = null;
             move.getChecker().move(newPos);
@@ -213,7 +211,6 @@ public class Game {
         deCount = 0;
         seCount = 0;
         pCount = 0;
-        successorEvaluations = new ArrayList<>();
         minimaxAB(depthLimit, currentPlayer, Integer.MIN_VALUE, Integer.MAX_VALUE, cloneState(gameState));
     }
 
@@ -230,28 +227,13 @@ public class Game {
 
     /**
      *
-     *
+     * @param depth
+     * @param currentPlayer
+     * @param alpha
+     * @param beta
+     * @param state
      * @return
      */
-    public Move getBestMove(String currentPlayer) {
-        int max = -10000;
-        int best = -1;
-        Move tempBest = null;
-        System.out.println("Successor Evaluations Size: " + successorEvaluations.size());
-        for (int i = 0; i < successorEvaluations.size(); i++) {
-            if (max <= successorEvaluations.get(i).score && currentPlayer.equals(successorEvaluations.get(i).player)) {
-                max = successorEvaluations.get(i).score;
-                System.out.print("Max: " + max);
-                best = i;
-                tempBest = successorEvaluations.get(i).getMove();
-            }
-        }
-        //System.out.println("Successor evaluations: " + successorEvaluations.toString());
-        //System.out.println("Best: " + best);
-        return tempBest;
-        //return successorEvaluations.get(best).getMove();
-    }
-
     public int minimaxAB(int depth, String currentPlayer, int alpha, int beta, Tile[] state) {
         Move tempBestMove = null;
         int bestScore;
@@ -262,8 +244,6 @@ public class Game {
         }
         if (depth == 0 || getAllLegalMoves(state).isEmpty()) {
             //Check if the tree has been traversed to specified level, or node is terminal node
-            seCount++;
-            //successorEvaluations.add(new MovesAndScores(bestScore, tempBestMove, currentPlayer));
             return calc_heuristic(state); // return static evaluation of node
 
         }
@@ -283,11 +263,6 @@ public class Game {
                 if (bestScore == beta) {
                     tempBestMove = move;
                 }
-                //if (beta > bestScore) {
-                //beta = bestScore;
-                //tempBestMove = move;
-                //successorEvaluations.add(new MovesAndScores(score, tempBestMove, "User"));// save the best move temporarily
-                //}
                 //Perform pruning if appropriate
                 if (alpha >= beta) {
                     pCount++;
@@ -313,12 +288,6 @@ public class Game {
                 if (alpha == score) {
                     tempBestMove = move;
                 }
-
-                //if (alpha < bestScore) {
-                //alpha = bestScore;
-                //tempBestMove = move;
-                //successorEvaluations.add(new MovesAndScores(score, tempBestMove, "Computer"));
-                //}
                 if (alpha >= beta) {
                     pCount++;
                     break;
@@ -327,26 +296,29 @@ public class Game {
             this.bestMove = tempBestMove;
             return bestScore;
         }
-        //this.bestMove = tempBestMove;
-        //return bestScore;
     }
 
-    public Move getBestMove2() {
+    /**
+     *
+     * @return
+     */
+    public Move getBestMove() {
         Checker bestChecker = this.gameState[bestMove.getOriginalPos() - 1].getChecker();
         Tile bestTile = this.gameState[bestMove.getNewPos() - 1];
         Move best = new Move(bestChecker, bestTile);
         if (this.bestMove.isCapturingMove()) {
             Checker captured = this.gameState[this.bestMove.getCapturedChecker().getPosition() - 1].getChecker();
             best.setCapturedChecker(captured);
-
         }
-
         return best;
 
     }
     
-
-
+    /**
+     *
+     * @param checker
+     * @return
+     */
     public boolean existsMultiLeg(Checker checker) {
         boolean existsMultileg = false;
         List<Move> multileg = getLegalMoves(checker, this.gameState);
@@ -358,6 +330,11 @@ public class Game {
         return existsMultileg;
     }
 
+    /**
+     *
+     * @param checker
+     * @return
+     */
     public Move getMultiLeg(Checker checker) {
         Move multi = null;
         List<Move> multileg = getLegalMoves(checker, this.gameState);
@@ -369,6 +346,12 @@ public class Game {
         return multi;
     }
 
+    /**
+     *
+     * @param checker
+     * @param tile
+     * @return
+     */
     public boolean isValidUserMove(Checker checker, Tile tile) {
         boolean validMove = false;
         List<Move> moves = getLegalMoves(checker, gameState);
@@ -381,6 +364,12 @@ public class Game {
         return validMove;
     }
 
+    /**
+     *
+     * @param checker
+     * @param tile
+     * @return
+     */
     public Move getValidUserMove(Checker checker, Tile tile) {
         Move validMove = null;
         List<Move> moves = getLegalMoves(checker, gameState);
@@ -393,11 +382,16 @@ public class Game {
         return validMove;
     }
 
+    /**
+     *
+     * @param move
+     * @return
+     */
     public boolean isForcedCapture(Move move) {
         boolean forcedCapture = false;
         List<Move> moves = getUserMoves(getAllLegalMoves(this.gameState));
         for (Move capture : moves) {
-            if (capture.isCapturingMove() && !capture.equals(move)) {
+            if (capture.isCapturingMove() && !move.isCapturingMove()) {
                 // If there is a legal move which is a capturing move and the user hasn't selected it, then return true
                 forcedCapture = true;
             }
