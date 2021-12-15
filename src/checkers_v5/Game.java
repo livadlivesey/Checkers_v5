@@ -63,24 +63,27 @@ public class Game {
     }
 
     public void move2(Move move, Tile[] state) {
-
         int oldPos = move.getOriginalPos();
-        System.out.println("oldPos: "+oldPos);
         int newPos = move.getNewPos();
-        System.out.println("newPos: "+newPos);
         state[newPos - 1].setChecker(move.getChecker());
         state[oldPos - 1].removeChecker();
         //If the move is a capturing move, make sure to remove the piece from board and representations
         if (move.isCapturingMove()) {
             capturedChecker = move.getCapturedChecker();
-            
             int capturedPos = capturedChecker.getPosition();
-            System.out.println("capturedPos: "+capturedPos);
-            state[capturedPos-1].removeChecker();
+            state[capturedPos - 1].removeChecker();
+
+            if (this.currentPlayer.equals("User")) {
+                System.out.println("capturedPos: " + capturedPos);
+            }
+
             capturedChecker = null;
             move.getChecker().move(newPos);
-            
-            //TODO: Remove circle too?
+
+        }
+        if (this.currentPlayer.equals("User")) {
+            System.out.println("oldPos: " + oldPos);
+            System.out.println("newPos: " + newPos);
         }
     }
 
@@ -129,7 +132,6 @@ public class Game {
                         //Iterate through the tiles to find the tile with the matching row and column values, to be added as a potential move
                         Move m = new Move(current, t);
                         //Set as a capturing move
-                        m.setCapturingMove();
                         int capturedPos = tile.getPosition();
                         m.setCapturedChecker(state[capturedPos - 1].getChecker());
                         legalMoves.add(m);
@@ -293,14 +295,17 @@ public class Game {
                 this.move2(move, tempState);
                 int score = minimaxAB(depth - 1, "Computer", alpha, beta, tempState); // start recursion
                 bestScore = Math.min(bestScore, score); //get best score
-
-                if (beta > bestScore) {
-                    beta = bestScore;
+                beta = Math.min(beta, score);
+                if (bestScore == beta) {
                     tempBestMove = move;
-                    //successorEvaluations.add(new MovesAndScores(score, tempBestMove, "User"));// save the best move temporarily
                 }
+                //if (beta > bestScore) {
+                //beta = bestScore;
+                //tempBestMove = move;
+                //successorEvaluations.add(new MovesAndScores(score, tempBestMove, "User"));// save the best move temporarily
+                //}
                 //Perform pruning if appropriate
-                if (beta <= alpha) {
+                if (alpha >= beta) {
                     pCount++;
                     break;
                 }
@@ -320,13 +325,17 @@ public class Game {
                 this.move2(move, tempState);
                 int score = minimaxAB(depth - 1, "User", alpha, beta, tempState);
                 bestScore = Math.max(score, bestScore);
-
-                if (alpha < bestScore) {
-                    alpha = bestScore;
+                alpha = Math.max(alpha, score);
+                if (alpha == score) {
                     tempBestMove = move;
-                    //successorEvaluations.add(new MovesAndScores(score, tempBestMove, "Computer"));
                 }
-                if (beta <= alpha) {
+
+                //if (alpha < bestScore) {
+                //alpha = bestScore;
+                //tempBestMove = move;
+                //successorEvaluations.add(new MovesAndScores(score, tempBestMove, "Computer"));
+                //}
+                if (alpha >= beta) {
                     pCount++;
                     break;
                 }
@@ -339,8 +348,17 @@ public class Game {
     }
 
     public Move getBestMove2() {
-        return this.bestMove;
-        
+        Checker bestChecker = this.gameState[bestMove.getOriginalPos() - 1].getChecker();
+        Tile bestTile = this.gameState[bestMove.getNewPos() - 1];
+        Move best = new Move(bestChecker, bestTile);
+        if (this.bestMove.isCapturingMove()) {
+            Checker captured = this.gameState[this.bestMove.getCapturedChecker().getPosition() - 1].getChecker();
+            best.setCapturedChecker(captured);
+
+        }
+
+        return best;
+
     }
 
     public List<Move> getUserMoves(List<Move> moves) {
@@ -377,14 +395,9 @@ public class Game {
                 if ("User".equals(c.getOwner())) {
                     human_score += 2;
                 }
-                if (c.getRow() == 1 && "Computer".equals(c.getOwner())) {
-                    ai_score += 3;
-                }
-                if (c.getRow() == 8 && "User".equals(c.getOwner())) {
-                    human_score += 3;
-                }
                 if (c.isKing()) {
                     if ("Computer".equals(c.getOwner())) {
+                        // Additional points for a piece if it's a king, the opponent loses points
                         ai_score += 3;
                         human_score -= 5;
 
@@ -392,6 +405,14 @@ public class Game {
                     if ("User".equals(c.getOwner())) {
                         human_score += 3;
                         ai_score -= 5;
+                    }
+                } else {
+                    // Back row pieces only get points if they aren't Kings
+                    if (c.getRow() == 1 && "Computer".equals(c.getOwner())) {
+                        ai_score += 3;
+                    }
+                    if (c.getRow() == 8 && "User".equals(c.getOwner())) {
+                        human_score += 3;
                     }
                 }
             }

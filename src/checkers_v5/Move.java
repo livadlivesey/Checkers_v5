@@ -14,26 +14,28 @@ public class Move {
     Tile newTile;
     boolean isCapturing = false;
     Checker capturedChecker;
+    //Tile[] state;
 
     public Move(Checker checker, Tile destination) {
         this.checker = checker;
         this.newTile = destination;
         this.originalPos = checker.getPosition();
-        this.newPos = newTile.getPosition();
+        this.newPos = destination.getPosition();
         this.isCapturing = false;
         this.capturedChecker = null;
+        //this.state = state;
     }
+    
+    
 
     public Checker getChecker() {
         return this.checker;
     }
 
-    public void setCapturingMove() {
-        this.isCapturing = true;
-    }
 
     public void setCapturedChecker(Checker c) {
         this.capturedChecker = c;
+        this.isCapturing = true;
     }
 
     public void calcIsCapturingMove(Checker checker, Tile tile) {
