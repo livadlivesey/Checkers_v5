@@ -193,7 +193,6 @@ public class Checkers_controller implements Initializable {
     List<Move> potentialMoves;
     Tile[] gameState;
     private Circle highlightedChecker;
-    int level;
     Move bestMove;
     InnerShadow tileShadow;
     InnerShadow tileShadow2;
@@ -485,7 +484,7 @@ public class Checkers_controller implements Initializable {
                     }
 
                     // If it's a forced capture situation, alert user
-                    if (model.isForcedCapture(currentMove, model.gameState)) {
+                    if (model.violatesForcedCapture(currentMove, model.gameState, "User")) {
                         Alert forcedCap = new Alert(AlertType.WARNING, " ", ButtonType.OK);
                         forcedCap.setContentText("There is a possible capturing move that you can take, however you have not selected it. Due to forced capture rules you must capture an enemy piece if possible. Please try again.");
                         forcedCap.setHeaderText("Oops! Forced Capture Error");
@@ -501,7 +500,7 @@ public class Checkers_controller implements Initializable {
                     if (currentMove.isCapturingMove() && !currentMove.isRegicide()) {
                         deleteChecker(currentMove.getCapturedChecker().getCircle());
                         while (model.existsMultiLeg(c)) {
-                            currentMove = model.getMultiLeg2(c);
+                            currentMove = model.getMultiLeg(c);
                             selectedTile = currentMove.getTile().getRectangle();
                             move_position(selectedChecker, selectedTile);
                             model.move(currentMove, model.gameState);
@@ -550,15 +549,15 @@ public class Checkers_controller implements Initializable {
      * Moves the User interface pieces and calls the model to update it's
      * representation of the pieces
      *
-     * Checks if there are available multi-leg moves and carries them out
-     *
-     * TO DO: Implement forced capture
+     * Checks if there are available multi-leg moves and carries them out.
      *
      */
     public void moveCompChecker() {
         // Retrieve best move from model
+        gameOver();
         model.startEval("Computer");
         bestMove = model.getBestMove();
+        System.out.println(bestMove);
         Checker bestChecker = bestMove.getChecker();
         Tile bestTile = bestMove.getTile();
         // Select the corresponding GUI objects 
@@ -573,12 +572,20 @@ public class Checkers_controller implements Initializable {
 
         //If it's a capturing move  make sure to remove the captured piece from board and representations
         if (bestMove.isCapturingMove()) {
-            deleteChecker(convertChecker(bestMove.getCapturedChecker())); // Remove captured checker from the GUI           
-
+            deleteChecker(convertChecker(bestMove.getCapturedChecker())); // Remove captured checker from the GUI                  
+            
             while (model.existsMultiLeg(bestChecker)) {
-                bestMove = model.getMultiLeg2(bestChecker);
+                bestMove = model.getMultiLeg(bestChecker);
                 selectedTile = bestMove.getTile().getRectangle();
-                move_position(selectedChecker, selectedTile);
+                Timeline timeline = new Timeline();
+                    timeline.setCycleCount(1);
+                    timeline.getKeyFrames().add(new KeyFrame(Duration.millis(2000), new KeyValue(gameText.textProperty(), "Multi-Leg capture")));
+                    timeline.play();
+                    timeline.setOnFinished(finish -> {
+                        move_position(selectedChecker, selectedTile);
+
+                    });
+                //move_position(selectedChecker, selectedTile);
                 model.move(bestMove, model.gameState);
             }
             // Go to next player's turn
