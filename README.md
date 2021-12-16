@@ -28,13 +28,14 @@
 ### Option 2 (Unsuccessful when tested):
 1. Open Citrix
 2. Open NetBeans 12.4
-3. Go to Tools --> Libraries --> New Library
-4. Create new Library called JavaFX 17
-5. Add in JavaFX 17 source files
-6. Download JDK 17 
-7. Set Java Platform to JDK 17
-8. Set Project properties to use the configured library and platform
-9. Run project
+3. Open Project
+5. Go to Tools --> Libraries --> New Library
+6. Create new Library called JavaFX 17
+7. Add in JavaFX 17 source files
+8. Download JDK 17 
+9. Set Java Platform to JDK 17
+10. Set Project properties to use the configured library and platform
+11. Run project
 
 ### Option 3 (Suggested) :
 1. Find Exectuable JAR file from Zipped folder
