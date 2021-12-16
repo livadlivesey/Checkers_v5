@@ -301,30 +301,23 @@ public class Game {
         }
         if (depth == 0 || getAllLegalMoves(state).isEmpty()) {
             //Check if the tree has been traversed to specified level, or node is terminal node, or the game is over
-            if (currentPlayer.equals("Computer")) {
-                this.bestMove = tempBestMove;
-                return evaluate(state); // return static evaluation of node for AI
-            } else {
-                this.bestMove = tempBestMove;
-                return -evaluate(state); // return inverse as the calculation function is based on the AI
-            }
-            //return evaluate(state);
+            return evaluate(state);
         }
         if (currentPlayer.equals("User")) {
             Tile[] tempState = cloneState(state);
             List<Move> legalMoves = getAllLegalMoves(tempState);
             List<Move> userMoves = getUserMoves(legalMoves); // Generate available moves for player
             for (Move move : userMoves) {
-                //Checker original = move.getChecker().cloneChecker(); //Copy move so checker is in state before moving
-                //Tile originalTile = move.getTile();
+                if (violatesForcedCapture(move, tempState, "User")) {
+                    continue;
+                }
                 //Carrying out move in tempstate
                 this.move(move, tempState);
                 int score = minimaxAB(depth - 1, "Computer", alpha, beta, tempState); // start recursion
                 bestScore = Math.min(bestScore, score); //get best score
                 beta = Math.min(beta, score); //update beta with lowest score
-                if (bestScore == beta) {
+                if (score == beta) {
                     tempBestMove = move; //update best move
-                    //successir evaluations here?
                 }
                 //Perform pruning of game tree if appropriate
                 if (alpha >= beta) {
@@ -339,9 +332,9 @@ public class Game {
             List<Move> legalMoves = getAllLegalMoves(tempState);
             List<Move> compMoves = getCompMoves(legalMoves); //Generate available moves for AI
             for (Move move : compMoves) {
-
-                //Checker original = move.getChecker().cloneChecker();
-                //Tile originalTile = move.getTile();
+                if (violatesForcedCapture(move, tempState, "Computer")) {
+                    continue;
+                }
                 this.move(move, tempState);
                 int score = minimaxAB(depth - 1, "User", alpha, beta, tempState); //Start recursion
                 bestScore = Math.max(score, bestScore); //Update bestScore to be max as needed
@@ -352,47 +345,17 @@ public class Game {
                 if (alpha >= beta) {
                     break; //Prune game tree as appropriate
                 }
-            }
+            }  
             this.bestMove = tempBestMove;
             return bestScore;
         }
     }
-
+    
     /**
      * Retrieves the best move .
      *
      * @return best The best move seen during the minimax algorithm
      */
-    public Move getBestMove2() {
-
-        System.out.println(this.bestMove);
-        List<Move> moves = getAllLegalMoves(gameState);
-        for (Move move : moves) {
-            System.out.println("Valid: " + move);
-            if (move.getChecker().equals(this.bestMove.getChecker()) && move.getTile().equals(this.bestMove.getTile())) {
-                bestMove = move;
-                return bestMove;
-            }
-        }
-        return bestMove;
-    }
-
-    public Move getBestMove3() {
-        int originalPosition = this.bestMove.getOriginalPos();
-        Checker moving = gameState[originalPosition - 1].getChecker();
-        System.out.println(moving);
-        Tile newTile = gameState[this.bestMove.getNewPos() - 1];
-        System.out.println(newTile);
-        for (Move move : getAllLegalMoves(gameState)) {
-            if (moving.equals(this.bestMove.getChecker()) && newTile.equals(this.bestMove.getTile())) {
-                this.bestMove = move;
-                System.out.println("TEST");
-                break;
-            }
-        }
-        return this.bestMove;
-    }
-
     public Move getBestMove() {
         Checker bestChecker = this.gameState[bestMove.getOriginalPos() - 1].getChecker();
         Tile bestTile = this.gameState[bestMove.getNewPos() - 1];
@@ -400,7 +363,6 @@ public class Game {
         if (this.bestMove.isCapturingMove()) {
             Checker captured = this.gameState[this.bestMove.getCapturedChecker().getPosition() - 1].getChecker();
             best.setCapturedChecker(captured);
-
         }
         return best;
     }
@@ -503,7 +465,6 @@ public class Game {
                 if (capture.isCapturingMove() && !move.isCapturingMove()) {
                     // If there is a legal move which is a capturing move and the user hasn't selected it, then return true
                     forcedCapture = true;
-                    System.out.println(capture);
                 }
             }
         } else {
@@ -512,7 +473,6 @@ public class Game {
                 if (capture.isCapturingMove() && !move.isCapturingMove()) {
                     // If there is a legal move which is a capturing move and the user hasn't selected it, then return true
                     forcedCapture = true;
-                    System.out.println(capture);
                 }
             }
         }

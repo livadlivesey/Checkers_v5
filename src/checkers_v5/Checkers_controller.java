@@ -498,13 +498,21 @@ public class Checkers_controller implements Initializable {
 
                     //If the move is a capturing move, but not regicide delete the checker
                     if (currentMove.isCapturingMove() && !currentMove.isRegicide()) {
-                        deleteChecker(currentMove.getCapturedChecker().getCircle());
+                        
                         while (model.existsMultiLeg(c)) {
-                            currentMove = model.getMultiLeg(c);
-                            selectedTile = currentMove.getTile().getRectangle();
+                            Timeline timeline = new Timeline();
+                            timeline.setCycleCount(1);
+                            timeline.setDelay(Duration.ONE);
+                            timeline.getKeyFrames().add(new KeyFrame(Duration.millis(2000), new KeyValue(gameText.textProperty(), "Multi-Leg capture")));
+                            timeline.play();
+                            
+                            Move multiLeg = model.getMultiLeg(c);
+                            selectedTile = multiLeg.getTile().getRectangle();
                             move_position(selectedChecker, selectedTile);
-                            model.move(currentMove, model.gameState);
+                            model.move(multiLeg, model.gameState);
+                            deleteChecker(multiLeg.getCapturedChecker().getCircle());
                         }
+                        deleteChecker(currentMove.getCapturedChecker().getCircle());
                     }
                     //Check if game over
                     gameOver();
@@ -557,6 +565,7 @@ public class Checkers_controller implements Initializable {
         gameOver();
         model.startEval("Computer");
         bestMove = model.getBestMove();
+        
         System.out.println(bestMove);
         Checker bestChecker = bestMove.getChecker();
         Tile bestTile = bestMove.getTile();
@@ -572,22 +581,21 @@ public class Checkers_controller implements Initializable {
 
         //If it's a capturing move  make sure to remove the captured piece from board and representations
         if (bestMove.isCapturingMove()) {
-            deleteChecker(convertChecker(bestMove.getCapturedChecker())); // Remove captured checker from the GUI                  
-            
             while (model.existsMultiLeg(bestChecker)) {
-                bestMove = model.getMultiLeg(bestChecker);
-                selectedTile = bestMove.getTile().getRectangle();
+                Move multileg = model.getMultiLeg(bestChecker);
+                selectedTile = multileg.getTile().getRectangle();
                 Timeline timeline = new Timeline();
-                    timeline.setCycleCount(1);
-                    timeline.getKeyFrames().add(new KeyFrame(Duration.millis(2000), new KeyValue(gameText.textProperty(), "Multi-Leg capture")));
-                    timeline.play();
-                    timeline.setOnFinished(finish -> {
-                        move_position(selectedChecker, selectedTile);
+                timeline.setCycleCount(1);
+                timeline.setDelay(Duration.ONE);
+                timeline.getKeyFrames().add(new KeyFrame(Duration.millis(2000), new KeyValue(gameText.textProperty(), "Multi-Leg capture")));
+                timeline.play();
 
-                    });
-                //move_position(selectedChecker, selectedTile);
-                model.move(bestMove, model.gameState);
+                model.move(multileg, model.gameState);
+                move_position(selectedChecker, selectedTile);
+                deleteChecker(multileg.getCapturedChecker().getCircle());
+                
             }
+            deleteChecker(bestMove.getCapturedChecker().getCircle()); // Remove captured checker from the GUI                  
             // Go to next player's turn
             model.nextTurn();
             // Update the variables used in the class to state before move

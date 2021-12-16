@@ -183,7 +183,7 @@ public class Checker {
      * 
      */
     public void paintKing() {
-        this.circle.setStroke(Color.GOLD);
+        this.circle.setStroke(Color.BLUE);
         this.circle.setStrokeDashOffset(1.0);
         this.circle.setStrokeWidth(3.0);
     }
