@@ -8,28 +8,37 @@
 
 ## How to run
 
-* This uses JavaFX and FXML
-* Java version: 8
-* JavaFX version: 8
-* JDK: 1.8
-* JRE: "Base JRE"
+### Version Information
 
-### Option 1:
-1. Download Netbeans
+* This uses JavaFX and FXML
+* Java version: 17 (Works with 8)
+* JavaFX version: 17 (works with 8)
+* JDK: 17 or 1.8
+* IDE: Apache NetBeans 12.6
+
+### Option 1 (Successful on non-lab PC):
+1. Download Netbeans 12.6
 2. Download Java 8
 3. Open up Netbeans project
 4. Set Netbeans project preferences to use Java 8 
 5. Set language to level 8
+6. Run project
 
 
-### Option 2:
+### Option 2 (Unsuccessful when tested):
 1. Open Citrix
-2. Open intelliJ
+2. Open NetBeans 12.4
+3. Go to Tools --> Libraries --> New Library
+4. Create new Library called JavaFX 17
+5. Add in JavaFX 17 source files
+6. Download JDK 17 
+7. Set Java Platform to JDK 17
+8. Set Project properties to use the configured library and platform
+9. Run project
 
-
-### Option 3:
-1. Get JAR file
-2. Run JAR file
+### Option 3 (Suggested) :
+1. Find Exectuable JAR file from Zipped folder
+2. Run JAR file (preferably using Citrix as been tested)
 
 ## How to play/Rules
 
